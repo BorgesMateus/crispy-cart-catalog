@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Product, CartItem } from '../types/products';
 import { toast } from '../components/ui/sonner';
@@ -15,6 +14,7 @@ interface CartContextData {
   packageCount: number;
   meetsMinimumOrder: boolean;
   addToCart: (product: Product) => void;
+  addMultipleToCart: (items: { product: Product | undefined, quantity: number }[]) => void;
   decreaseQuantity: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   removeFromCart: (productId: string) => void;
@@ -43,9 +43,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     0
   );
   
-  // Count unique packages
+  // Count packages - FIXED: now counting by quantity, not just unique items
   const packageCount = cartItems.reduce((count, item) => {
-    return item.product.isPackage ? count + 1 : count;
+    return item.product.isPackage ? count + item.quantity : count;
   }, 0);
   
   // Check if minimum order requirements are met
@@ -64,6 +64,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       } else {
         toast.success(`${product.name} adicionado ao carrinho`, {
           description: 'Clique no carrinho para ver os detalhes.',
+          duration: 3000,
+          closeButton: true,
           action: {
             label: "Ver Carrinho",
             onClick: () => setIsCartOpen(true)
@@ -72,6 +74,48 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         return [...prev, { product, quantity: 1 }];
       }
     });
+  };
+
+  const addMultipleToCart = (items: { product: Product | undefined, quantity: number }[]) => {
+    const validItems = items.filter((item): item is {product: Product, quantity: number} => 
+      item.product !== undefined
+    );
+    
+    if (validItems.length === 0) return;
+    
+    setCartItems(prev => {
+      const newCart = [...prev];
+      
+      validItems.forEach(({ product, quantity }) => {
+        const existingItemIndex = newCart.findIndex(item => item.product.id === product.id);
+        
+        if (existingItemIndex >= 0) {
+          // Update existing item
+          newCart[existingItemIndex] = {
+            ...newCart[existingItemIndex],
+            quantity: newCart[existingItemIndex].quantity + quantity
+          };
+        } else {
+          // Add new item
+          newCart.push({ product, quantity });
+        }
+      });
+      
+      toast.success(`Kit adicionado ao carrinho`, {
+        description: `${validItems.length} produtos adicionados.`,
+        duration: 3000,
+        closeButton: true,
+        action: {
+          label: "Ver Carrinho",
+          onClick: () => setIsCartOpen(true)
+        },
+      });
+      
+      return newCart;
+    });
+    
+    // Open cart automatically when adding a kit
+    setIsCartOpen(true);
   };
 
   const decreaseQuantity = (productId: string) => {
@@ -138,6 +182,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       packageCount,
       meetsMinimumOrder,
       addToCart,
+      addMultipleToCart,
       decreaseQuantity,
       updateQuantity,
       removeFromCart,

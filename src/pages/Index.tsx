@@ -8,6 +8,8 @@ import SearchBar from '../components/SearchBar';
 import Cart from '../components/Cart';
 import CartToggle from '../components/CartToggle';
 import { normalizeText } from '@/utils/stringUtils';
+import { KITS } from '@/data/kits';
+import KitCard from '@/components/KitCard';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,9 +29,8 @@ const Index = () => {
       );
     }
     
-    // Then filter by category if not "all" and if we don't have a search term
-    // When there's a search term, we want to show all matching products regardless of category
-    if (selectedCategory !== 'all' && !searchTerm) {
+    // Then filter by category if not "all"
+    if (selectedCategory !== 'all' && selectedCategory !== 'Kits e Combos') {
       result = result.filter(product => product.category === selectedCategory);
     }
     
@@ -58,21 +59,43 @@ const Index = () => {
             categories={CATEGORIES}
           />
           
-          {/* Products Grid */}
-          <div className="p-4">
-            {filteredProducts.length === 0 ? (
-              <div className="text-center py-20">
-                <h2 className="text-2xl font-semibold text-gray-500">Nenhum produto encontrado</h2>
-                <p className="text-gray-400 mt-2">Tente uma busca diferente ou outra categoria.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
+          {/* Kits Section - Only show when "Kits e Combos" is selected or "all" is selected */}
+          {(selectedCategory === 'all' || selectedCategory === 'Kits e Combos') && !searchTerm && (
+            <div className="mt-6 px-4">
+              <h2 className="text-xl font-bold mb-4 text-gray-800">Kits e Combos</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {KITS.map(kit => (
+                  <KitCard key={kit.id} kit={kit} />
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+          
+          {/* Show divider if both kits and products are displayed */}
+          {(selectedCategory === 'all' || selectedCategory === 'Kits e Combos') && 
+           filteredProducts.length > 0 && !searchTerm && (
+            <div className="border-t my-8 mx-4"></div>
+          )}
+          
+          {/* Products Grid */}
+          {(selectedCategory !== 'Kits e Combos' || searchTerm || filteredProducts.length > 0) && (
+            <div className="p-4">
+              {selectedCategory === 'all' && !searchTerm && <h2 className="text-xl font-bold mb-4 text-gray-800">Produtos</h2>}
+              
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-20">
+                  <h2 className="text-2xl font-semibold text-gray-500">Nenhum produto encontrado</h2>
+                  <p className="text-gray-400 mt-2">Tente uma busca diferente ou outra categoria.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {filteredProducts.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </main>
         
         {/* Footer */}

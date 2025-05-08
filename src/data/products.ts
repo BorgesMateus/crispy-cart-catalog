@@ -10,6 +10,7 @@ export const MIN_WEIGHT_KG = 5;
 
 // List of available product categories
 export const CATEGORIES: Category[] = [
+  'Kits e Combos',
   'Salgados Fritos',
   'Salgados Assados',
   'Pães',

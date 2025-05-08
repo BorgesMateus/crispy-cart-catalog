@@ -4,6 +4,7 @@ export type Category =
   | 'Salgados Assados' 
   | 'Pães' 
   | 'Biscoitos' 
+  | 'Kits e Combos'
   | 'Outros';
 
 export interface Product {
@@ -19,6 +20,19 @@ export interface Product {
 
 export interface CartItem {
   product: Product;
+  quantity: number;
+}
+
+export interface Kit {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  items: KitItem[];
+}
+
+export interface KitItem {
+  productId: string;
   quantity: number;
 }
 
