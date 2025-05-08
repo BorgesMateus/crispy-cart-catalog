@@ -64,8 +64,8 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				catalog: {
-					primary: '#FF6B6B',
-					secondary: '#4ECDC4',
+					primary: '#FF0000', // Red
+					secondary: '#FFD700', // Yellow/Gold
 					accent: '#FFD166',
 					background: '#F7F9FC',
 					text: '#2D3748',

@@ -10,7 +10,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
-  image: string;
+  images: string[];
   category: Category;
   description?: string;
 }
@@ -18,4 +18,11 @@ export interface Product {
 export interface CartItem {
   product: Product;
   quantity: number;
+}
+
+export type City = 'Brasília' | 'Águas Claras' | 'Taguatinga' | 'Ceilândia' | 'Samambaia' | 'Gama' | 'Planaltina';
+
+export interface ShippingRate {
+  city: City;
+  cost: number;
 }

@@ -11,12 +11,12 @@ const CartToggle: React.FC = () => {
     <Button 
       onClick={toggleCart}
       variant="default"
-      className="fixed bottom-6 right-6 z-30 shadow-lg bg-catalog-primary hover:bg-catalog-primary/90 rounded-full h-16 w-16 md:h-auto md:w-auto md:rounded-lg md:px-4 md:py-2 md:bottom-auto md:top-4 md:right-4"
+      className="fixed bottom-6 right-6 z-30 shadow-lg bg-red-600 hover:bg-red-700 rounded-full h-16 w-16 md:h-auto md:w-auto md:rounded-lg md:px-4 md:py-2 md:bottom-auto md:top-4 md:right-4"
     >
       <ShoppingCart className="h-6 w-6 md:mr-2" />
       <span className="hidden md:inline">R$ {cartTotal.toFixed(2)}</span>
       {itemsCount > 0 && (
-        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+        <span className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
           {itemsCount}
         </span>
       )}

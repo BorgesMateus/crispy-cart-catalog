@@ -7,6 +7,7 @@ import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import Cart from '../components/Cart';
 import CartToggle from '../components/CartToggle';
+import { normalizeText } from '@/utils/stringUtils';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,17 +18,17 @@ const Index = () => {
   useEffect(() => {
     let result = PRODUCTS;
     
-    // Filter by category
+    // Filter by category if not "all"
     if (selectedCategory !== 'all') {
       result = result.filter(product => product.category === selectedCategory);
     }
     
-    // Filter by search term
+    // Filter by search term with accent-insensitive search
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+      const normalizedTerm = normalizeText(searchTerm);
       result = result.filter(product => 
-        product.name.toLowerCase().includes(term) || 
-        product.description?.toLowerCase().includes(term)
+        normalizeText(product.name).includes(normalizedTerm) || 
+        (product.description && normalizeText(product.description).includes(normalizedTerm))
       );
     }
     
@@ -38,7 +39,7 @@ const Index = () => {
     <CartProvider>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <header className="bg-catalog-primary text-white py-6">
+        <header className="bg-red-600 text-white py-6">
           <div className="container mx-auto px-4">
             <h1 className="text-3xl font-bold text-center">Catálogo Interativo</h1>
             <p className="text-center opacity-90 mt-1">Os melhores produtos da região</p>

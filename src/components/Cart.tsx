@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { X, Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
@@ -7,6 +7,10 @@ import { Separator } from './ui/separator';
 import { Progress } from './ui/progress';
 import { toast } from '@/components/ui/sonner';
 import { STORE_WHATSAPP } from '../data/products';
+import { Input } from './ui/input';
+import CitySelector from './CitySelector';
+import { City } from '@/types/products';
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATES } from '@/data/shipping';
 
 const Cart: React.FC = () => {
   const { 
@@ -18,8 +22,24 @@ const Cart: React.FC = () => {
     addToCart,
     decreaseQuantity,
     removeFromCart,
+    updateQuantity,
     freeShippingRemaining 
   } = useCart();
+
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  
+  const shippingCost = selectedCity 
+    ? SHIPPING_RATES.find(rate => rate.city === selectedCity)?.cost || 0
+    : 0;
+  
+  const isFreeShipping = freeShippingRemaining <= 0;
+  const finalShippingCost = isFreeShipping ? 0 : shippingCost;
+  const orderTotal = cartTotal + finalShippingCost;
+
+  const handleQuantityChange = (productId: string, value: string) => {
+    const quantity = parseInt(value) || 0;
+    updateQuantity(productId, quantity);
+  };
 
   const handleFinalizeOrder = () => {
     if (cartItems.length === 0) {
@@ -34,7 +54,14 @@ const Cart: React.FC = () => {
       .map(item => `${item.quantity}x ${item.product.name} - R$${(item.product.price * item.quantity).toFixed(2)}`)
       .join('\n');
 
-    const message = `*Novo Pedido*\n\n*Produtos:*\n${cartItemsText}\n\n*Total:* R$${cartTotal.toFixed(2)}`;
+    const shippingText = selectedCity 
+      ? `\n\n*Entrega para:* ${selectedCity}` + 
+        `\n*Taxa de entrega:* ${isFreeShipping ? 'Grátis' : `R$${finalShippingCost.toFixed(2)}`}`
+      : '';
+
+    const message = `*Novo Pedido*\n\n*Produtos:*\n${cartItemsText}` + 
+                    shippingText +
+                    `\n\n*Total:* R$${orderTotal.toFixed(2)}`;
     
     // Encode the message for URL
     const encodedMessage = encodeURIComponent(message);
@@ -69,7 +96,7 @@ const Cart: React.FC = () => {
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-4 bg-catalog-primary text-white flex justify-between items-center">
+        <div className="p-4 bg-red-600 text-white flex justify-between items-center">
           <h2 className="text-xl font-bold flex items-center">
             <ShoppingCart className="mr-2 h-5 w-5" />
             Carrinho ({itemsCount})
@@ -93,7 +120,7 @@ const Cart: React.FC = () => {
                   <div className="flex justify-between">
                     <div className="flex-grow">
                       <h3 className="font-medium">{item.product.name}</h3>
-                      <p className="text-catalog-primary font-semibold">
+                      <p className="text-red-600 font-semibold">
                         R$ {item.product.price.toFixed(2)}
                       </p>
                     </div>
@@ -117,7 +144,12 @@ const Cart: React.FC = () => {
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
-                    <span className="mx-2 font-medium w-6 text-center">{item.quantity}</span>
+                    <Input
+                      type="text"
+                      value={item.quantity.toString()}
+                      onChange={(e) => handleQuantityChange(item.product.id, e.target.value)}
+                      className="mx-2 h-8 w-12 px-2 text-center"
+                    />
                     <Button
                       onClick={() => addToCart(item.product)}
                       variant="outline"
@@ -141,11 +173,22 @@ const Cart: React.FC = () => {
         {freeShippingRemaining > 0 && cartItems.length > 0 && (
           <div className="px-4 py-2 bg-gray-50">
             <p className="text-sm mb-1">
-              Faltam <span className="font-bold text-catalog-primary">R$ {freeShippingRemaining.toFixed(2)}</span> para frete grátis!
+              Faltam <span className="font-bold text-red-600">R$ {freeShippingRemaining.toFixed(2)}</span> para frete grátis!
             </p>
             <Progress 
-              value={(1 - freeShippingRemaining / 50) * 100} 
+              value={(1 - freeShippingRemaining / FREE_SHIPPING_THRESHOLD) * 100} 
               className="h-2 bg-gray-200"
+            />
+          </div>
+        )}
+
+        {/* City selection and shipping */}
+        {cartItems.length > 0 && (
+          <div className="px-4 py-3 bg-gray-50 border-t">
+            <p className="text-sm mb-2 font-medium">Selecione sua cidade para entrega:</p>
+            <CitySelector 
+              selectedCity={selectedCity}
+              onSelectCity={setSelectedCity}
             />
           </div>
         )}
@@ -159,20 +202,22 @@ const Cart: React.FC = () => {
           <div className="flex justify-between mb-4">
             <span className="font-medium">Entrega:</span>
             <span className="font-medium">
-              {freeShippingRemaining <= 0 ? (
+              {!selectedCity ? (
+                'Selecione sua cidade'
+              ) : isFreeShipping ? (
                 <span className="text-green-600">Grátis</span>
               ) : (
-                'A calcular'
+                `R$ ${finalShippingCost.toFixed(2)}`
               )}
             </span>
           </div>
           <Separator className="mb-4" />
           <div className="flex justify-between mb-4">
             <span className="text-lg font-bold">Total:</span>
-            <span className="text-lg font-bold">R$ {cartTotal.toFixed(2)}</span>
+            <span className="text-lg font-bold">R$ {orderTotal.toFixed(2)}</span>
           </div>
           <Button 
-            className="w-full bg-catalog-primary hover:bg-catalog-primary/90"
+            className="w-full bg-red-600 hover:bg-red-700 text-white"
             size="lg"
             onClick={handleFinalizeOrder}
           >
