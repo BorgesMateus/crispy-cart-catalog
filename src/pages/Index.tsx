@@ -18,18 +18,19 @@ const Index = () => {
   useEffect(() => {
     let result = PRODUCTS;
     
-    // Filter by category if not "all"
-    if (selectedCategory !== 'all') {
-      result = result.filter(product => product.category === selectedCategory);
-    }
-    
-    // Filter by search term with accent-insensitive search
+    // First filter by search term with accent-insensitive search (if search term exists)
     if (searchTerm) {
       const normalizedTerm = normalizeText(searchTerm);
-      result = result.filter(product => 
+      result = PRODUCTS.filter(product => 
         normalizeText(product.name).includes(normalizedTerm) || 
         (product.description && normalizeText(product.description).includes(normalizedTerm))
       );
+    }
+    
+    // Then filter by category if not "all" and if we don't have a search term
+    // When there's a search term, we want to show all matching products regardless of category
+    if (selectedCategory !== 'all' && !searchTerm) {
+      result = result.filter(product => product.category === selectedCategory);
     }
     
     setFilteredProducts(result);
