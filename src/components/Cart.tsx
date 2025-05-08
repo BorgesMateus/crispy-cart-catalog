@@ -2,11 +2,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
-import { X, Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingCart, Package, Scale } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { Progress } from './ui/progress';
 import { toast } from '@/components/ui/sonner';
 import { STORE_WHATSAPP } from '../data/products';
+import { MIN_PACKAGES, MIN_WEIGHT_KG } from '@/data/products';
 import { Input } from './ui/input';
 import CitySelector from './CitySelector';
 import { City } from '@/types/products';
@@ -23,7 +24,10 @@ const Cart: React.FC = () => {
     decreaseQuantity,
     removeFromCart,
     updateQuantity,
-    freeShippingRemaining 
+    freeShippingRemaining,
+    totalWeight,
+    packageCount,
+    meetsMinimumOrder
   } = useCart();
 
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
@@ -45,6 +49,13 @@ const Cart: React.FC = () => {
     if (cartItems.length === 0) {
       toast.error('Seu carrinho está vazio!', {
         description: 'Adicione produtos antes de finalizar o pedido.'
+      });
+      return;
+    }
+
+    if (!meetsMinimumOrder) {
+      toast.error('Não atende ao pedido mínimo!', {
+        description: `Você precisa ter pelo menos ${MIN_PACKAGES} pacotes diversos ou ${MIN_WEIGHT_KG}kg no total.`
       });
       return;
     }
@@ -123,6 +134,10 @@ const Cart: React.FC = () => {
                       <p className="text-red-600 font-semibold">
                         R$ {item.product.price.toFixed(2)}
                       </p>
+                      <p className="text-xs text-gray-500">
+                        Peso: {item.product.weight.toFixed(2)}kg
+                        {item.product.isPackage && ' • Pacote'}
+                      </p>
                     </div>
                     
                     <Button 
@@ -168,6 +183,35 @@ const Cart: React.FC = () => {
             </>
           )}
         </div>
+
+        {/* Order minimum requirements */}
+        {cartItems.length > 0 && (
+          <div className="px-4 py-2 bg-gray-50 border-t">
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <Package className="h-4 w-4 mr-1 text-gray-500" />
+                <span className="text-sm font-medium">Pacotes:</span>
+              </div>
+              <span className={`text-sm font-bold ${packageCount >= MIN_PACKAGES ? 'text-green-600' : 'text-gray-600'}`}>
+                {packageCount}/{MIN_PACKAGES}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <Scale className="h-4 w-4 mr-1 text-gray-500" />
+                <span className="text-sm font-medium">Peso Total:</span>
+              </div>
+              <span className={`text-sm font-bold ${totalWeight >= MIN_WEIGHT_KG ? 'text-green-600' : 'text-gray-600'}`}>
+                {totalWeight.toFixed(2)}/{MIN_WEIGHT_KG}kg
+              </span>
+            </div>
+            {!meetsMinimumOrder && (
+              <div className="text-amber-600 text-xs font-medium bg-amber-50 p-2 rounded-md mt-1">
+                ⚠️ Pedido mínimo: {MIN_PACKAGES} pacotes diversos ou {MIN_WEIGHT_KG}kg no total.
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Free shipping progress */}
         {freeShippingRemaining > 0 && cartItems.length > 0 && (
@@ -220,9 +264,15 @@ const Cart: React.FC = () => {
             className="w-full bg-red-600 hover:bg-red-700 text-white"
             size="lg"
             onClick={handleFinalizeOrder}
+            disabled={!meetsMinimumOrder || cartItems.length === 0}
           >
             Finalizar Pedido
           </Button>
+          {cartItems.length > 0 && !meetsMinimumOrder && (
+            <p className="text-xs text-center text-amber-600 mt-2">
+              ⚠️ Complete o pedido mínimo para continuar
+            </p>
+          )}
         </div>
       </aside>
     </>

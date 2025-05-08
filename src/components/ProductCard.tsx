@@ -4,7 +4,7 @@ import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardFooter } from './ui/card';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, Package, Scale } from 'lucide-react';
 import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 
@@ -60,6 +60,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <CardContent className="flex-grow pt-4">
         <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
         <p className="text-sm text-gray-500 mb-2">{product.description}</p>
+        <div className="flex items-center gap-3 mb-2 text-xs text-gray-500">
+          <span className="flex items-center">
+            <Scale className="h-3 w-3 mr-1" />
+            {product.weight.toFixed(2)}kg
+          </span>
+          {product.isPackage && (
+            <span className="flex items-center">
+              <Package className="h-3 w-3 mr-1" />
+              Pacote
+            </span>
+          )}
+        </div>
         <p className="text-xl font-bold text-red-600">
           R$ {product.price.toFixed(2)}
         </p>

@@ -13,6 +13,8 @@ export interface Product {
   images: string[];
   category: Category;
   description?: string;
+  weight: number; // Weight in kg
+  isPackage: boolean; // Whether this product counts as a package for minimum order
 }
 
 export interface CartItem {

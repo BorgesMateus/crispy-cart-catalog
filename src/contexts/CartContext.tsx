@@ -3,6 +3,7 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Product, CartItem } from '../types/products';
 import { toast } from '../components/ui/sonner';
 import { FREE_SHIPPING_THRESHOLD } from '@/data/shipping';
+import { MIN_PACKAGES, MIN_WEIGHT_KG } from '@/data/products';
 
 interface CartContextData {
   cartItems: CartItem[];
@@ -10,6 +11,9 @@ interface CartContextData {
   itemsCount: number;
   isCartOpen: boolean;
   freeShippingRemaining: number;
+  totalWeight: number;
+  packageCount: number;
+  meetsMinimumOrder: boolean;
   addToCart: (product: Product) => void;
   decreaseQuantity: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -32,6 +36,20 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
   const itemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
+  
+  // Calculate total weight
+  const totalWeight = cartItems.reduce(
+    (sum, item) => sum + (item.product.weight * item.quantity), 
+    0
+  );
+  
+  // Count unique packages
+  const packageCount = cartItems.reduce((count, item) => {
+    return item.product.isPackage ? count + 1 : count;
+  }, 0);
+  
+  // Check if minimum order requirements are met
+  const meetsMinimumOrder = packageCount >= MIN_PACKAGES || totalWeight >= MIN_WEIGHT_KG;
 
   const addToCart = (product: Product) => {
     setCartItems(prev => {
@@ -116,6 +134,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       itemsCount,
       isCartOpen,
       freeShippingRemaining,
+      totalWeight,
+      packageCount,
+      meetsMinimumOrder,
       addToCart,
       decreaseQuantity,
       updateQuantity,

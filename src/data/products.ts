@@ -4,6 +4,10 @@ import { Category, Product } from '../types/products';
 // WhatsApp number for orders
 export const STORE_WHATSAPP = "5561999999999"; // Replace with actual number
 
+// Minimum order requirements
+export const MIN_PACKAGES = 5;
+export const MIN_WEIGHT_KG = 5;
+
 // List of available product categories
 export const CATEGORIES: Category[] = [
   'Salgados Fritos',
@@ -24,7 +28,9 @@ export const PRODUCTS: Product[] = [
       "/products/pao-queijo-2.jpg"
     ],
     category: "Salgados Assados",
-    description: "Tradicional pão de queijo mineiro, quentinho e macio."
+    description: "Tradicional pão de queijo mineiro, quentinho e macio.",
+    weight: 0.25,
+    isPackage: true
   },
   {
     id: "2",
@@ -35,7 +41,9 @@ export const PRODUCTS: Product[] = [
       "/products/coxinha-2.jpg"
     ],
     category: "Salgados Fritos",
-    description: "Coxinha de frango cremosa com catupiry."
+    description: "Coxinha de frango cremosa com catupiry.",
+    weight: 0.3,
+    isPackage: true
   },
   {
     id: "3",
@@ -43,7 +51,9 @@ export const PRODUCTS: Product[] = [
     price: 0.75,
     images: ["/products/pao-frances.jpg"],
     category: "Pães",
-    description: "Pão francês tradicional, crocante por fora e macio por dentro."
+    description: "Pão francês tradicional, crocante por fora e macio por dentro.",
+    weight: 0.05,
+    isPackage: false
   },
   {
     id: "4",
@@ -51,7 +61,9 @@ export const PRODUCTS: Product[] = [
     price: 5.99,
     images: ["/products/biscoito-polvilho.jpg"],
     category: "Biscoitos",
-    description: "Biscoito de polvilho crocante, sabor tradicional. Pacote com 100g."
+    description: "Biscoito de polvilho crocante, sabor tradicional. Pacote com 100g.",
+    weight: 0.1,
+    isPackage: true
   },
   {
     id: "5",
@@ -59,7 +71,9 @@ export const PRODUCTS: Product[] = [
     price: 4.99,
     images: ["/products/empada.jpg"],
     category: "Salgados Assados",
-    description: "Empada de frango com massa folhada crocante."
+    description: "Empada de frango com massa folhada crocante.",
+    weight: 0.15,
+    isPackage: true
   },
   {
     id: "6",
@@ -67,7 +81,9 @@ export const PRODUCTS: Product[] = [
     price: 4.50,
     images: ["/products/quibe.jpg"],
     category: "Salgados Fritos",
-    description: "Quibe frito recheado com queijo."
+    description: "Quibe frito recheado com queijo.",
+    weight: 0.2,
+    isPackage: true
   },
   {
     id: "7",
@@ -75,7 +91,9 @@ export const PRODUCTS: Product[] = [
     price: 7.99,
     images: ["/products/pao-integral.jpg"],
     category: "Pães",
-    description: "Pão de forma integral, com grãos. 500g."
+    description: "Pão de forma integral, com grãos. 500g.",
+    weight: 0.5,
+    isPackage: true
   },
   {
     id: "8",
@@ -83,7 +101,9 @@ export const PRODUCTS: Product[] = [
     price: 3.99,
     images: ["/products/cookie.jpg"],
     category: "Biscoitos",
-    description: "Cookie de chocolate com gotas de chocolate meio amargo."
+    description: "Cookie de chocolate com gotas de chocolate meio amargo.",
+    weight: 0.08,
+    isPackage: true
   },
   {
     id: "9",
@@ -94,7 +114,9 @@ export const PRODUCTS: Product[] = [
       "/products/bolo-chocolate-2.jpg"
     ],
     category: "Outros",
-    description: "Bolo de chocolate com cobertura de ganache. Fatia."
+    description: "Bolo de chocolate com cobertura de ganache. Fatia.",
+    weight: 0.35,
+    isPackage: false
   },
   {
     id: "10",
@@ -102,6 +124,8 @@ export const PRODUCTS: Product[] = [
     price: 2.50,
     images: ["/products/cafe.jpg"],
     category: "Outros",
-    description: "Café fresco coado na hora. 200ml."
+    description: "Café fresco coado na hora. 200ml.",
+    weight: 0.2,
+    isPackage: false
   }
 ];
