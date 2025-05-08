@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
@@ -32,11 +31,13 @@ const Cart: React.FC = () => {
 
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   
+  // Get the shipping cost for the selected city
   const shippingCost = selectedCity 
     ? SHIPPING_RATES.find(rate => rate.city === selectedCity)?.cost || 0
     : 0;
   
-  const isFreeShipping = freeShippingRemaining <= 0;
+  // Only apply free shipping if cart total meets or exceeds the free shipping threshold
+  const isFreeShipping = cartTotal >= FREE_SHIPPING_THRESHOLD;
   const finalShippingCost = isFreeShipping ? 0 : shippingCost;
   const orderTotal = cartTotal + finalShippingCost;
 
