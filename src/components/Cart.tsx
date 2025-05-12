@@ -83,12 +83,11 @@ const Cart: React.FC = () => {
       setShowNewCustomerForm(false); // Show the initial question dialog
       return;
     }
-    
-    // Send to WhatsApp
-    sendToWhatsApp();
   };
   
   const sendToWhatsApp = () => {
+    // Only send to WhatsApp when we have all needed information
+    
     // Generate WhatsApp message with order details
     const cartItemsText = cartItems
       .map(item => `${item.quantity}x ${item.product.name} - R$${(item.product.price * item.quantity).toFixed(2)}`)
@@ -131,8 +130,12 @@ const Cart: React.FC = () => {
     } else {
       // Form data was submitted from the detailed form
       setCustomerInfo(formData);
-      // Now send the order to WhatsApp with the customer info
-      setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
+      
+      // Now that we have the customer info properly set, send the order to WhatsApp
+      // Use a more reliable way to ensure state is updated before sending
+      setTimeout(() => {
+        sendToWhatsApp();
+      }, 200); // Slightly longer delay to ensure state is fully updated
     }
   };
   
@@ -140,8 +143,8 @@ const Cart: React.FC = () => {
     // User clicked "Não", indicating they are a returning customer
     setShowNewCustomerForm(null);
     
-    // Send the order to WhatsApp without customer info
-    setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
+    // For returning customers, we can send to WhatsApp directly
+    sendToWhatsApp();
   };
 
   return (

@@ -46,6 +46,8 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
     // Format CPF if needed
     const formattedCPF = data.cpf.replace(/\D/g, '');
+    
+    // Submit the form data with formatted CPF
     onSubmit({
       ...data,
       cpf: formattedCPF,
