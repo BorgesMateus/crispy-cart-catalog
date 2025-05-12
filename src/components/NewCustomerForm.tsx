@@ -3,8 +3,6 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,6 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface NewCustomerFormProps {
   isOpen: boolean;
@@ -53,7 +52,7 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
     });
   };
   
-  // If initial dialog asking if it's first purchase
+  // This is the first question dialog "É sua primeira compra?"
   if (!isOpen) {
     return (
       <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
@@ -63,13 +62,13 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
           </DialogHeader>
           <div className="flex gap-3 justify-center mt-4">
             <Button 
+              onClick={onExistingCustomer}
               className="bg-red-600 hover:bg-red-700"
-              onClick={() => onExistingCustomer()}
             >
               Não
             </Button>
             <Button 
-              variant="outline" 
+              variant="outline"
               onClick={() => onSubmit(true)}
             >
               Sim
@@ -80,6 +79,7 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
     );
   }
   
+  // This is the actual form for new customers
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md overflow-y-auto max-h-[90vh]">

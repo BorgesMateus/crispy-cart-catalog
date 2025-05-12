@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
@@ -81,11 +80,11 @@ const Cart: React.FC = () => {
     
     // Ask if it's the first purchase only if we don't already know
     if (showNewCustomerForm === null) {
-      setShowNewCustomerForm(true);
+      setShowNewCustomerForm(false); // Show the initial question dialog
       return;
     }
     
-    // Send to WhatsApp with customer info if provided
+    // Send to WhatsApp
     sendToWhatsApp();
   };
   
@@ -126,15 +125,20 @@ const Cart: React.FC = () => {
   };
   
   const handleNewCustomerFormSubmit = (formData: any) => {
-    setCustomerInfo(formData);
-    setShowNewCustomerForm(false);
-    
-    // Now send the order to WhatsApp with the customer info
-    setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
+    if (formData === true) {
+      // User clicked "Sim" in the first question, show the actual form
+      setShowNewCustomerForm(true);
+    } else {
+      // Form data was submitted from the detailed form
+      setCustomerInfo(formData);
+      // Now send the order to WhatsApp with the customer info
+      setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
+    }
   };
   
   const handleExistingCustomer = () => {
-    setShowNewCustomerForm(false);
+    // User clicked "Não", indicating they are a returning customer
+    setShowNewCustomerForm(null);
     
     // Send the order to WhatsApp without customer info
     setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
