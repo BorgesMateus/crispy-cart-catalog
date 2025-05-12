@@ -2,7 +2,7 @@
 import { Category, Product } from '../types/products';
 
 // WhatsApp number for orders
-export const STORE_WHATSAPP = "5561999999999"; // Replace with actual number
+export const STORE_WHATSAPP = "5561982065632"; // Updated to the correct number
 
 // Minimum order requirements
 export const MIN_PACKAGES = 5;
@@ -117,7 +117,12 @@ export const PRODUCTS: Product[] = [
     category: "Outros",
     description: "Bolo de chocolate com cobertura de ganache. Fatia.",
     weight: 0.35,
-    isPackage: false
+    isPackage: false,
+    extraInfo: {
+      usageTips: "Perfeito para sobremesa após uma refeição ou para acompanhar um café à tarde.",
+      ingredients: "Chocolate, farinha, açúcar, ovos, manteiga, leite e fermento.",
+      funFact: "O chocolate contém antioxidantes que podem melhorar o humor."
+    }
   },
   {
     id: "10",

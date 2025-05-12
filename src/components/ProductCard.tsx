@@ -4,9 +4,10 @@ import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardFooter } from './ui/card';
-import { Plus, Minus, Package, Scale } from 'lucide-react';
+import { Plus, Minus, Package, Scale, ChevronDown } from 'lucide-react';
 import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
+import ProductDetail from './ProductDetail';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +15,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   
   const currentItem = cartItems.find(item => item.product.id === product.id);
   const quantity = currentItem ? currentItem.quantity : 0;
@@ -44,67 +46,99 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       setInputValue((parseInt(inputValue) - 1).toString());
     }
   };
+  
+  const hasExtraInfo = product.extraInfo && (
+    product.extraInfo.usageTips || 
+    product.extraInfo.ingredients || 
+    product.extraInfo.funFact
+  );
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-md">
-      <div className="relative overflow-hidden">
-        <ProductImageCarousel 
-          images={product.images} 
-          productName={product.name} 
-          className="aspect-square"
-        />
-        <div className="absolute top-2 right-2 bg-white text-red-600 font-bold px-2 py-1 rounded-full text-xs">
-          {product.category}
-        </div>
-      </div>
-      <CardContent className="flex-grow pt-4">
-        <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-        <p className="text-sm text-gray-500 mb-2">{product.description}</p>
-        <div className="flex items-center gap-3 mb-2 text-xs text-gray-500">
-          <span className="flex items-center">
-            <Scale className="h-3 w-3 mr-1" />
-            {product.weight.toFixed(2)}kg
-          </span>
-          {product.isPackage && (
-            <span className="flex items-center">
-              <Package className="h-3 w-3 mr-1" />
-              Pacote
-            </span>
+    <>
+      <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-md">
+        <div className="relative overflow-hidden">
+          <ProductImageCarousel 
+            images={product.images} 
+            productName={product.name} 
+            className="aspect-square"
+          />
+          <div className="absolute top-2 right-2 bg-white text-red-600 font-bold px-2 py-1 rounded-full text-xs">
+            {product.category}
+          </div>
+          {product.featured && (
+            <div className="absolute top-2 left-2 bg-yellow-500 text-white font-bold px-2 py-1 rounded-full text-xs">
+              Destaque
+            </div>
           )}
         </div>
-        <p className="text-xl font-bold text-red-600">
-          R$ {product.price.toFixed(2)}
-        </p>
-      </CardContent>
-      <CardFooter className="pt-0 flex justify-between items-center">
-        <div className="flex items-center">
-          <Button
-            onClick={handleDecreaseQuantity}
-            variant="outline"
-            size="icon"
-            className={`rounded-full h-8 w-8 ${quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={quantity === 0}
-          >
-            <Minus className="h-4 w-4" />
-          </Button>
-          <Input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            onBlur={handleInputBlur}
-            className="mx-2 h-8 w-12 px-2 text-center"
-          />
-          <Button
-            onClick={handleAddToCart}
-            variant="outline"
-            size="icon"
-            className="rounded-full h-8 w-8"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardFooter>
-    </Card>
+        <CardContent className="flex-grow pt-4">
+          <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+          <p className="text-sm text-gray-500 mb-2">{product.description}</p>
+          <div className="flex items-center gap-3 mb-2 text-xs text-gray-500">
+            <span className="flex items-center">
+              <Scale className="h-3 w-3 mr-1" />
+              {product.weight.toFixed(2)}kg
+            </span>
+            {product.isPackage && (
+              <span className="flex items-center">
+                <Package className="h-3 w-3 mr-1" />
+                Pacote
+              </span>
+            )}
+          </div>
+          <p className="text-xl font-bold text-red-600">
+            R$ {product.price.toFixed(2)}
+          </p>
+          
+          {hasExtraInfo && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsDetailOpen(true)}
+              className="text-xs flex items-center mt-2 text-blue-600 hover:text-blue-700 p-0 h-auto"
+            >
+              Ver Mais <ChevronDown className="h-3 w-3 ml-1" />
+            </Button>
+          )}
+        </CardContent>
+        <CardFooter className="pt-0 flex justify-between items-center">
+          <div className="flex items-center">
+            <Button
+              onClick={handleDecreaseQuantity}
+              variant="outline"
+              size="icon"
+              className={`rounded-full h-8 w-8 ${quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={quantity === 0}
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+            <Input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
+              className="mx-2 h-8 w-12 px-2 text-center"
+            />
+            <Button
+              onClick={handleAddToCart}
+              variant="outline"
+              size="icon"
+              className="rounded-full h-8 w-8"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+      
+      {hasExtraInfo && (
+        <ProductDetail 
+          product={product} 
+          isOpen={isDetailOpen} 
+          onClose={() => setIsDetailOpen(false)} 
+        />
+      )}
+    </>
   );
 };
 

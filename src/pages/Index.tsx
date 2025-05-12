@@ -10,6 +10,8 @@ import CartToggle from '../components/CartToggle';
 import { normalizeText } from '@/utils/stringUtils';
 import { KITS } from '@/data/kits';
 import KitCard from '@/components/KitCard';
+import FeaturedProducts from '@/components/FeaturedProducts';
+import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,6 +60,15 @@ const Index = () => {
             setSelectedCategory={setSelectedCategory}
             categories={CATEGORIES}
           />
+          
+          {/* Featured Products (only show when no search term) */}
+          {!searchTerm && (
+            <FeaturedProducts 
+              title="Destaques da Semana" 
+              products={WEEKLY_TOP}
+              description="Os produtos mais pedidos pelos nossos clientes"
+            />
+          )}
           
           {/* Kits Section - Only show when "Kits e Combos" is selected or "all" is selected */}
           {(selectedCategory === 'all' || selectedCategory === 'Kits e Combos') && !searchTerm && (

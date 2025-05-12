@@ -7,6 +7,12 @@ export type Category =
   | 'Kits e Combos'
   | 'Outros';
 
+export interface ProductExtraInfo {
+  usageTips?: string;
+  ingredients?: string;
+  funFact?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -16,6 +22,8 @@ export interface Product {
   description?: string;
   weight: number; // Weight in kg
   isPackage: boolean; // Whether this product counts as a package for minimum order
+  featured?: boolean; // Whether this product should be featured
+  extraInfo?: ProductExtraInfo; // Additional information for expandable view
 }
 
 export interface CartItem {

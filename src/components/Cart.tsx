@@ -12,6 +12,7 @@ import { Input } from './ui/input';
 import CitySelector from './CitySelector';
 import { City } from '@/types/products';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATES } from '@/data/shipping';
+import NewCustomerForm from './NewCustomerForm';
 
 const Cart: React.FC = () => {
   const { 
@@ -27,10 +28,19 @@ const Cart: React.FC = () => {
     freeShippingRemaining,
     totalWeight,
     packageCount,
-    meetsMinimumOrder
+    meetsMinimumOrder,
+    animateCartIcon
   } = useCart();
 
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [showNewCustomerForm, setShowNewCustomerForm] = useState<boolean | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<{
+    name: string;
+    cpf: string;
+    address: string;
+    zipCode: string;
+    referralSource: string;
+  } | null>(null);
   
   // Get the shipping cost for the selected city
   const shippingCost = selectedCity 
@@ -61,7 +71,25 @@ const Cart: React.FC = () => {
       });
       return;
     }
-
+    
+    if (!selectedCity) {
+      toast.error('Selecione sua cidade!', {
+        description: 'É necessário selecionar uma cidade para calcular o frete.'
+      });
+      return;
+    }
+    
+    // Ask if it's the first purchase only if we don't already know
+    if (showNewCustomerForm === null) {
+      setShowNewCustomerForm(true);
+      return;
+    }
+    
+    // Send to WhatsApp with customer info if provided
+    sendToWhatsApp();
+  };
+  
+  const sendToWhatsApp = () => {
     // Generate WhatsApp message with order details
     const cartItemsText = cartItems
       .map(item => `${item.quantity}x ${item.product.name} - R$${(item.product.price * item.quantity).toFixed(2)}`)
@@ -71,9 +99,20 @@ const Cart: React.FC = () => {
       ? `\n\n*Entrega para:* ${selectedCity}` + 
         `\n*Taxa de entrega:* ${isFreeShipping ? 'Grátis' : `R$${finalShippingCost.toFixed(2)}`}`
       : '';
+    
+    let customerInfoText = '';
+    if (customerInfo) {
+      customerInfoText = `\n\n*Dados do Cliente:*\n` +
+        `Nome: ${customerInfo.name}\n` +
+        `CPF: ${customerInfo.cpf}\n` +
+        `Endereço: ${customerInfo.address}\n` +
+        `CEP: ${customerInfo.zipCode}\n` +
+        `Como nos conheceu: ${customerInfo.referralSource}`;
+    }
 
     const message = `*Novo Pedido*\n\n*Produtos:*\n${cartItemsText}` + 
                     shippingText +
+                    customerInfoText +
                     `\n\n*Total:* R$${orderTotal.toFixed(2)}`;
     
     // Encode the message for URL
@@ -81,6 +120,24 @@ const Cart: React.FC = () => {
     
     // Open WhatsApp with the message
     window.open(`https://wa.me/${STORE_WHATSAPP}?text=${encodedMessage}`, '_blank');
+    
+    // Close the cart after sending
+    closeCart();
+  };
+  
+  const handleNewCustomerFormSubmit = (formData: any) => {
+    setCustomerInfo(formData);
+    setShowNewCustomerForm(false);
+    
+    // Now send the order to WhatsApp with the customer info
+    setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
+  };
+  
+  const handleExistingCustomer = () => {
+    setShowNewCustomerForm(false);
+    
+    // Send the order to WhatsApp without customer info
+    setTimeout(sendToWhatsApp, 100); // Small delay to ensure state is updated
   };
 
   return (
@@ -236,6 +293,11 @@ const Cart: React.FC = () => {
               selectedCity={selectedCity}
               onSelectCity={setSelectedCity}
             />
+            {!selectedCity && cartItems.length > 0 && (
+              <p className="text-amber-600 text-xs mt-2">
+                ⚠️ Selecione sua cidade antes de finalizar o pedido
+              </p>
+            )}
           </div>
         )}
 
@@ -266,7 +328,11 @@ const Cart: React.FC = () => {
             className="w-full bg-red-600 hover:bg-red-700 text-white"
             size="lg"
             onClick={handleFinalizeOrder}
-            disabled={!meetsMinimumOrder || cartItems.length === 0}
+            disabled={
+              !meetsMinimumOrder || 
+              cartItems.length === 0 ||
+              !selectedCity
+            }
           >
             Finalizar Pedido
           </Button>
@@ -277,6 +343,16 @@ const Cart: React.FC = () => {
           )}
         </div>
       </aside>
+      
+      {/* New customer form dialog */}
+      {showNewCustomerForm !== null && (
+        <NewCustomerForm
+          isOpen={showNewCustomerForm === true}
+          onClose={() => setShowNewCustomerForm(null)}
+          onSubmit={handleNewCustomerFormSubmit}
+          onExistingCustomer={handleExistingCustomer}
+        />
+      )}
     </>
   );
 };
