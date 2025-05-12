@@ -102,6 +102,7 @@ const Index = () => {
         <footer className="bg-gray-100 py-6 border-t">
           <div className="container mx-auto px-4 text-center text-gray-500">
             <p>&copy; {new Date().getFullYear()} Catálogo Interativo. Todos os direitos reservados.</p>
+            <p className="text-sm mt-1 text-gray-400">Desenvolvido por Mateus Borges</p>
           </div>
         </footer>
         
