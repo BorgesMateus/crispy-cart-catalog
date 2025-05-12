@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { X, Trash2, Plus, Minus, ShoppingCart, Package, Scale } from 'lucide-react';
@@ -51,6 +52,13 @@ const Cart: React.FC = () => {
   const finalShippingCost = isFreeShipping ? 0 : shippingCost;
   const orderTotal = cartTotal + finalShippingCost;
 
+  // New useEffect hook to trigger WhatsApp redirect when customerInfo is updated
+  useEffect(() => {
+    if (customerInfo) {
+      sendToWhatsApp();
+    }
+  }, [customerInfo]);
+
   const handleQuantityChange = (productId: string, value: string) => {
     const quantity = parseInt(value) || 0;
     updateQuantity(productId, quantity);
@@ -86,8 +94,6 @@ const Cart: React.FC = () => {
   };
   
   const sendToWhatsApp = () => {
-    // Only send to WhatsApp when we have all needed information
-    
     // Generate WhatsApp message with order details
     const cartItemsText = cartItems
       .map(item => `${item.quantity}x ${item.product.name} - R$${(item.product.price * item.quantity).toFixed(2)}`)
@@ -130,12 +136,7 @@ const Cart: React.FC = () => {
     } else {
       // Form data was submitted from the detailed form
       setCustomerInfo(formData);
-      
-      // Now that we have the customer info properly set, send the order to WhatsApp
-      // Use a more reliable way to ensure state is updated before sending
-      setTimeout(() => {
-        sendToWhatsApp();
-      }, 200); // Slightly longer delay to ensure state is fully updated
+      // The useEffect hook will handle the WhatsApp redirect now
     }
   };
   
