@@ -23,10 +23,10 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   return (
     <div className="w-full">
       <Select value={selectedCity || undefined} onValueChange={(value) => onSelectCity(value as City)}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full cart-select-dropdown">
           <SelectValue placeholder="Selecione sua cidade" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="cart-select-content">
           <SelectGroup>
             {SHIPPING_RATES.map((rate) => (
               <SelectItem key={rate.city} value={rate.city}>

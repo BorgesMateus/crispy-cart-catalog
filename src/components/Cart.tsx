@@ -184,7 +184,7 @@ const Cart: React.FC = () => {
       />
 
       <aside 
-        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-96 bg-white shadow-xl transform transition-transform duration-300 overflow-hidden flex flex-col ${
+        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-96 bg-white shadow-xl transform transition-transform duration-300 cart-sidebar ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -321,7 +321,7 @@ const Cart: React.FC = () => {
 
         {/* City selection and shipping */}
         {cartItems.length > 0 && (
-          <div className="px-4 py-3 bg-gray-50 border-t">
+          <div className="px-4 py-3 bg-gray-50 border-t relative">
             <p className="text-sm mb-2 font-medium">Selecione sua cidade para entrega:</p>
             <CitySelector 
               selectedCity={selectedCity}

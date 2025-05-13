@@ -6,3 +6,21 @@
   touch-action: pan-y;
   overscroll-behavior-y: contain;
 }
+
+/* Fix for dropdown menu display in cart */
+.cart-select-dropdown {
+  z-index: 9999 !important;
+  background-color: white;
+  position: relative;
+}
+
+.cart-select-content {
+  background-color: white !important;
+  z-index: 9999 !important;
+}
+
+.cart-sidebar {
+  overflow-y: auto;
+  max-height: 100vh;
+  overscroll-behavior: contain;
+}
