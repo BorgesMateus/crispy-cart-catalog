@@ -60,7 +60,7 @@ export const PRODUCTS: Product[] = [
     id: "4",
     name: "Biscoito de Polvilho",
     price: 5.99,
-    images: ["/products/biscoito-polvilho.jpg"],
+    images: ["/lovable-uploads/e7f3f889-4a2c-455b-93a9-21f81078ae6a.png"],
     category: "Biscoitos",
     description: "Biscoito de polvilho crocante, sabor tradicional. Pacote com 100g.",
     weight: 0.1,
