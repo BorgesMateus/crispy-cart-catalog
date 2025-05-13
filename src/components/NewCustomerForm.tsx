@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { formatCPF, formatCEP, fetchAddressFromCEP } from '@/utils/formatUtils';
+import { toast } from './ui/sonner';
 
 interface NewCustomerFormProps {
   isOpen: boolean;
@@ -26,32 +28,71 @@ interface NewCustomerFormProps {
 const formSchema = z.object({
   name: z.string().min(3, { message: "Nome deve ter pelo menos 3 caracteres" }),
   cpf: z.string().min(11, { message: "CPF deve ter 11 dígitos" }).max(14),
-  address: z.string().min(5, { message: "Endereço deve ter pelo menos 5 caracteres" }),
   zipCode: z.string().min(8, { message: "CEP deve ter 8 dígitos" }).max(9),
+  address: z.string().min(5, { message: "Endereço deve ter pelo menos 5 caracteres" }),
+  district: z.string().optional(),
+  city: z.string().min(2, { message: "Cidade deve ter pelo menos 2 caracteres" }),
+  state: z.string().min(2, { message: "Estado deve ter pelo menos 2 caracteres" }),
   referralSource: z.string({ required_error: "Selecione como nos conheceu" }),
 });
 
 const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSubmit, onExistingCustomer }) => {
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       cpf: "",
-      address: "",
       zipCode: "",
+      address: "",
+      district: "",
+      city: "",
+      state: "",
       referralSource: "",
     },
   });
   
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    // Format CPF if needed
+    // Format CPF without the mask for submission
     const formattedCPF = data.cpf.replace(/\D/g, '');
     
-    // Submit the form data with formatted CPF
+    // Full address that combines street, district, city and state
+    const fullAddress = `${data.address}${data.district ? ', ' + data.district : ''}, ${data.city}/${data.state}`;
+    
+    // Submit the form data with formatted values
     onSubmit({
-      ...data,
+      name: data.name,
       cpf: formattedCPF,
+      address: fullAddress,
+      zipCode: data.zipCode.replace(/\D/g, ''),
+      referralSource: data.referralSource,
     });
+  };
+
+  const lookupAddressFromCEP = async (cep: string) => {
+    if (!cep || cep.replace(/\D/g, '').length !== 8) return;
+
+    try {
+      setIsLoadingAddress(true);
+      const addressData = await fetchAddressFromCEP(cep);
+      
+      if (addressData.erro) {
+        toast.error("Endereço não encontrado para o CEP informado.");
+        return;
+      }
+      
+      // Update form fields
+      form.setValue("address", addressData.logradouro || '');
+      form.setValue("district", addressData.bairro || '');
+      form.setValue("city", addressData.localidade || '');
+      form.setValue("state", addressData.uf || '');
+    } catch (error) {
+      toast.error("Erro ao buscar endereço. Tente novamente.");
+      console.error("Error fetching address:", error);
+    } finally {
+      setIsLoadingAddress(false);
+    }
   };
   
   // This is the first question dialog "É sua primeira compra?"
@@ -113,29 +154,16 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
                   <FormLabel>CPF</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Digite seu CPF (apenas números)" 
-                      {...field}
+                      placeholder="000.000.000-00" 
+                      value={field.value}
                       onChange={(e) => {
-                        // Allow only numbers
-                        const value = e.target.value.replace(/\D/g, '');
-                        field.onChange(value);
+                        // Format as CPF
+                        const rawValue = e.target.value.replace(/\D/g, '');
+                        const formattedValue = formatCPF(rawValue);
+                        field.onChange(formattedValue);
                       }}
-                      maxLength={11}
+                      maxLength={14}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Endereço</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Digite seu endereço completo" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,14 +178,98 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
                   <FormLabel>CEP</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Digite seu CEP (apenas números)" 
-                      {...field}
+                      placeholder="00000-000" 
+                      value={field.value}
                       onChange={(e) => {
-                        // Allow only numbers
-                        const value = e.target.value.replace(/\D/g, '');
-                        field.onChange(value);
+                        // Format as CEP
+                        const rawValue = e.target.value.replace(/\D/g, '');
+                        const formattedValue = formatCEP(rawValue);
+                        field.onChange(formattedValue);
+                        
+                        // Auto lookup address if CEP is complete
+                        if (rawValue.length === 8) {
+                          lookupAddressFromCEP(rawValue);
+                        }
                       }}
-                      maxLength={8}
+                      maxLength={9}
+                      disabled={isLoadingAddress}
+                    />
+                  </FormControl>
+                  {isLoadingAddress && (
+                    <p className="text-xs text-gray-500">Buscando endereço...</p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Endereço</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Rua, número" 
+                      {...field} 
+                      disabled={isLoadingAddress}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="district"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bairro</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Bairro" 
+                        {...field} 
+                        disabled={isLoadingAddress}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cidade</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Cidade" 
+                        {...field} 
+                        disabled={isLoadingAddress}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Estado" 
+                      {...field} 
+                      disabled={isLoadingAddress}
                     />
                   </FormControl>
                   <FormMessage />

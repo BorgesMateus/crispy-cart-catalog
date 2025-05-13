@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
@@ -55,7 +54,7 @@ const Cart: React.FC = () => {
   // New useEffect hook to trigger WhatsApp redirect when customerInfo is updated
   useEffect(() => {
     if (customerInfo) {
-      sendToWhatsApp();
+      sendToWhatsApp(true); // Send with customer information
     }
   }, [customerInfo]);
 
@@ -93,7 +92,7 @@ const Cart: React.FC = () => {
     }
   };
   
-  const sendToWhatsApp = () => {
+  const sendToWhatsApp = (includeCustomerInfo: boolean = false) => {
     // Generate WhatsApp message with order details
     const cartItemsText = cartItems
       .map(item => `${item.quantity}x ${item.product.name} - R$${(item.product.price * item.quantity).toFixed(2)}`)
@@ -105,7 +104,7 @@ const Cart: React.FC = () => {
       : '';
     
     let customerInfoText = '';
-    if (customerInfo) {
+    if (includeCustomerInfo && customerInfo) {
       customerInfoText = `\n\n*Dados do Cliente:*\n` +
         `Nome: ${customerInfo.name}\n` +
         `CPF: ${customerInfo.cpf}\n` +
@@ -142,10 +141,11 @@ const Cart: React.FC = () => {
   
   const handleExistingCustomer = () => {
     // User clicked "Não", indicating they are a returning customer
+    // or clicked "Cancelar" on the form
     setShowNewCustomerForm(null);
     
-    // For returning customers, we can send to WhatsApp directly
-    sendToWhatsApp();
+    // For returning customers or when user cancels form, send to WhatsApp directly without customer info
+    sendToWhatsApp(false);
   };
 
   return (
