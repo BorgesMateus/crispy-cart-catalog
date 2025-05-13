@@ -58,6 +58,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [cartItems]);
 
   const addToCart = (product: Product) => {
+    console.log("CartContext - addToCart called with product:", product.name);
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.product.id === product.id);
       
@@ -77,6 +78,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addMultipleToCart = (products: {product: Product, quantity: number}[]) => {
+    console.log("CartContext - addMultipleToCart called with products:", products.map(p => p.product.name));
     setCartItems(prevItems => {
       const newItems = [...prevItems];
       
@@ -101,6 +103,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const decreaseQuantity = (productId: string) => {
+    console.log("CartContext - decreaseQuantity called for productId:", productId);
     setCartItems(prevItems => {
       return prevItems.map(item => {
         if (item.product.id === productId) {
@@ -115,25 +118,33 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeFromCart = (productId: string) => {
+    console.log("CartContext - removeFromCart called for productId:", productId);
     setCartItems(prevItems => prevItems.filter(item => item.product.id !== productId));
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
+    console.log("CartContext - updateQuantity called:", productId, quantity);
+    
     if (quantity <= 0) {
+      console.log("CartContext - removing item because quantity <= 0");
       removeFromCart(productId);
       return;
     }
     
     setCartItems(prevItems => {
-      return prevItems.map(item => 
+      console.log("CartContext - current cart items:", prevItems);
+      const newItems = prevItems.map(item => 
         item.product.id === productId 
           ? { ...item, quantity } 
           : item
       );
+      console.log("CartContext - updated cart items:", newItems);
+      return newItems;
     });
   };
 
   const clearCart = () => {
+    console.log("CartContext - clearCart called");
     setCartItems([]);
   };
 

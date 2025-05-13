@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Product } from '@/types/products';
 import {
@@ -13,6 +14,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { toast } from './ui/sonner';
 
 interface ProductDetailProps {
   product: Product;
@@ -26,7 +28,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   onClose,
 }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
-  const { toast } = useToast();
+  const { toast: shadcnToast } = useToast();
   
   // Get current quantity from cart
   const currentItem = cartItems.find(item => item.product.id === product.id);
@@ -57,17 +59,21 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   };
 
   const handleApplyQuantity = () => {
+    console.log("ProductDetail - Applying quantity: Current input value =", inputValue);
     const newQuantity = parseInt(inputValue) || 0;
+    console.log("ProductDetail - Parsed quantity =", newQuantity);
+    
     if (newQuantity > 0) {
+      console.log("ProductDetail - Updating cart with new quantity:", newQuantity);
       updateQuantity(product.id, newQuantity);
       setManualEdit(false); // Reset manual edit mode after applying
+      console.log("ProductDetail - Manual edit reset to:", false);
     } else {
       // Reset to current quantity if invalid
       setInputValue(quantity.toString());
-      toast({
-        title: "Quantidade inválida",
-        description: "Por favor, insira um número maior que zero.",
-        variant: "destructive"
+      console.log("ProductDetail - Invalid quantity. Reset to:", quantity);
+      toast("Quantidade inválida", {
+        description: "Por favor, insira um número maior que zero."
       });
     }
   };
@@ -82,6 +88,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   
   // Only show apply button during manual edit AND when value is different
   const showApplyButton = manualEdit && parseInt(inputValue) !== quantity;
+  
+  console.log("ProductDetail Render -", product.name, "- quantity:", quantity, "inputValue:", inputValue, "manualEdit:", manualEdit, "showApplyButton:", showApplyButton);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

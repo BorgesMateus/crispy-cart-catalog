@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
@@ -8,6 +9,7 @@ import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 import ProductDetail from './ProductDetail';
 import { useToast } from '@/hooks/use-toast';
+import { toast } from './ui/sonner';
 
 interface ProductCardProps {
   product: Product;
@@ -15,7 +17,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
-  const { toast } = useToast();
+  const { toast: shadcnToast } = useToast();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   
   // Find this product in cart to get current quantity
@@ -47,17 +49,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleApplyQuantity = () => {
+    console.log("ProductCard - Applying quantity: Current input value =", inputValue);
     const newQuantity = parseInt(inputValue) || 0;
+    console.log("ProductCard - Parsed quantity =", newQuantity);
+    
     if (newQuantity > 0) {
+      console.log("ProductCard - Updating cart with new quantity:", newQuantity);
       updateQuantity(product.id, newQuantity);
       setManualEdit(false); // Reset manual edit mode after applying
+      console.log("ProductCard - Manual edit reset to:", false);
     } else {
       // Reset to current quantity if invalid
       setInputValue(quantity.toString());
-      toast({
-        title: "Quantidade inválida",
-        description: "Por favor, insira um número maior que zero.",
-        variant: "destructive"
+      console.log("ProductCard - Invalid quantity. Reset to:", quantity);
+      toast("Quantidade inválida", {
+        description: "Por favor, insira um número maior que zero."
       });
     }
   };
@@ -72,6 +78,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
   // Only show apply button during manual edit AND when value is different
   const showApplyButton = manualEdit && parseInt(inputValue) !== quantity;
+  
+  console.log("ProductCard Render -", product.name, "- quantity:", quantity, "inputValue:", inputValue, "manualEdit:", manualEdit, "showApplyButton:", showApplyButton);
 
   return (
     <>
