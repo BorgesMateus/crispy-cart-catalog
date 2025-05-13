@@ -12,7 +12,6 @@ import ProductImageCarousel from './ProductImageCarousel';
 import { Package, Scale } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/contexts/CartContext';
-import { ProductExtraInfo } from '@/types/products';
 
 interface ProductDetailProps {
   product: Product;
@@ -26,7 +25,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   onClose,
 }) => {
   const { addToCart } = useCart();
-  const extraInfo = product.extraInfo as ProductExtraInfo | undefined;
 
   const handleAddToCart = () => {
     addToCart(product);
@@ -51,24 +49,33 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         </div>
         
         <div className="mt-4 space-y-4">
-          {extraInfo?.usageTips && (
+          {product.extraInfo?.usageTips && (
             <div>
               <h3 className="text-sm font-medium text-gray-700">Dicas de uso:</h3>
-              <p className="text-sm text-gray-600 mt-1">{extraInfo.usageTips}</p>
+              <p className="text-sm text-gray-600 mt-1">{product.extraInfo.usageTips}</p>
             </div>
           )}
           
-          {extraInfo?.ingredients && (
+          {product.extraInfo?.ingredients && (
             <div>
               <h3 className="text-sm font-medium text-gray-700">Ingredientes:</h3>
-              <p className="text-sm text-gray-600 mt-1">{extraInfo.ingredients}</p>
+              <p className="text-sm text-gray-600 mt-1">{product.extraInfo.ingredients}</p>
             </div>
           )}
           
-          {extraInfo?.funFact && (
+          {product.extraInfo?.funFact && (
             <div>
               <h3 className="text-sm font-medium text-gray-700">Você sabia?</h3>
-              <p className="text-sm text-gray-600 mt-1">{extraInfo.funFact}</p>
+              <p className="text-sm text-gray-600 mt-1">{product.extraInfo.funFact}</p>
+            </div>
+          )}
+          
+          {/* If no extraInfo at all, show a message */}
+          {!product.extraInfo?.usageTips && 
+           !product.extraInfo?.ingredients && 
+           !product.extraInfo?.funFact && (
+            <div>
+              <p className="text-sm text-gray-500">Informações adicionais sobre este produto estarão disponíveis em breve.</p>
             </div>
           )}
           

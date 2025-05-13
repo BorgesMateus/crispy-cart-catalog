@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardFooter } from './ui/card';
-import { Plus, Minus, Package, Scale, ChevronDown } from 'lucide-react';
+import { Plus, Minus, Package, Scale, Eye } from 'lucide-react';
 import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 import ProductDetail from './ProductDetail';
@@ -21,11 +21,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const quantity = currentItem ? currentItem.quantity : 0;
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
   
+  // Update input value when cart quantity changes
+  useEffect(() => {
+    setInputValue(quantity.toString());
+  }, [quantity]);
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Allow only numbers
     if (/^\d*$/.test(value)) {
       setInputValue(value);
+      
+      // Update quantity immediately when value changes
+      const newQuantity = parseInt(value) || 0;
+      updateQuantity(product.id, newQuantity);
     }
   };
 
@@ -37,21 +46,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleAddToCart = () => {
     addToCart(product);
-    setInputValue((parseInt(inputValue) + 1).toString());
   };
 
   const handleDecreaseQuantity = () => {
     decreaseQuantity(product.id);
-    if (quantity > 0) {
-      setInputValue((parseInt(inputValue) - 1).toString());
-    }
   };
-  
-  const hasExtraInfo = product.extraInfo && (
-    product.extraInfo.usageTips || 
-    product.extraInfo.ingredients || 
-    product.extraInfo.funFact
-  );
 
   return (
     <>
@@ -90,16 +89,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             R$ {product.price.toFixed(2)}
           </p>
           
-          {hasExtraInfo && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsDetailOpen(true)}
-              className="text-xs flex items-center mt-2 text-blue-600 hover:text-blue-700 p-0 h-auto"
-            >
-              Ver Mais <ChevronDown className="h-3 w-3 ml-1" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsDetailOpen(true)}
+            className="text-xs flex items-center mt-2 text-blue-600 hover:text-blue-700 p-0 h-auto"
+          >
+            <Eye className="h-3 w-3 mr-1" />
+            Ver Mais
+          </Button>
         </CardContent>
         <CardFooter className="pt-0 flex justify-between items-center">
           <div className="flex items-center">
@@ -131,13 +129,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </CardFooter>
       </Card>
       
-      {hasExtraInfo && (
-        <ProductDetail 
-          product={product} 
-          isOpen={isDetailOpen} 
-          onClose={() => setIsDetailOpen(false)} 
-        />
-      )}
+      <ProductDetail 
+        product={product} 
+        isOpen={isDetailOpen} 
+        onClose={() => setIsDetailOpen(false)} 
+      />
     </>
   );
 };
