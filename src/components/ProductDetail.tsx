@@ -13,6 +13,7 @@ import { Package, Scale, Plus, Minus } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useCart } from '@/contexts/CartContext';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface ProductDetailProps {
   product: Product;
@@ -32,10 +33,22 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const quantity = currentItem ? currentItem.quantity : 0;
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
   
+  // Create debounced version of the input value with 500ms delay
+  const debouncedInputValue = useDebounce<string>(inputValue, 500);
+  
   // Update input value when cart quantity changes
   useEffect(() => {
     setInputValue(quantity.toString());
   }, [quantity]);
+  
+  // Update cart when the debounced input value changes
+  useEffect(() => {
+    const newQuantity = parseInt(debouncedInputValue) || 0;
+    // Only update if the quantity has actually changed
+    if (newQuantity !== quantity) {
+      updateQuantity(product.id, newQuantity);
+    }
+  }, [debouncedInputValue, product.id, quantity, updateQuantity]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
