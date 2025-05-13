@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { formatCPF, formatCEP, fetchAddressFromCEP } from '@/utils/formatUtils';
+import { formatCPF, formatCEP, fetchAddressFromCEP, createFullAddress } from '@/utils/formatUtils';
 import { toast } from './ui/sonner';
 
 interface NewCustomerFormProps {
@@ -30,6 +30,8 @@ const formSchema = z.object({
   cpf: z.string().min(11, { message: "CPF deve ter 11 dígitos" }).max(14),
   zipCode: z.string().min(8, { message: "CEP deve ter 8 dígitos" }).max(9),
   address: z.string().min(5, { message: "Endereço deve ter pelo menos 5 caracteres" }),
+  number: z.string().min(1, { message: "Número é obrigatório" }),
+  complement: z.string().optional(),
   district: z.string().optional(),
   city: z.string().min(2, { message: "Cidade deve ter pelo menos 2 caracteres" }),
   state: z.string().min(2, { message: "Estado deve ter pelo menos 2 caracteres" }),
@@ -46,6 +48,8 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
       cpf: "",
       zipCode: "",
       address: "",
+      number: "",
+      complement: "",
       district: "",
       city: "",
       state: "",
@@ -57,8 +61,15 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
     // Format CPF without the mask for submission
     const formattedCPF = data.cpf.replace(/\D/g, '');
     
-    // Full address that combines street, district, city and state
-    const fullAddress = `${data.address}${data.district ? ', ' + data.district : ''}, ${data.city}/${data.state}`;
+    // Create full address that combines street, number, complement, district, city and state
+    const fullAddress = createFullAddress(
+      data.address,
+      data.number,
+      data.complement,
+      data.district,
+      data.city,
+      data.state
+    );
     
     // Submit the form data with formatted values
     onSubmit({
@@ -87,6 +98,12 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
       form.setValue("district", addressData.bairro || '');
       form.setValue("city", addressData.localidade || '');
       form.setValue("state", addressData.uf || '');
+      
+      // Focus on the number field after the address is filled
+      setTimeout(() => {
+        document.getElementById("number-field")?.focus();
+      }, 100);
+      
     } catch (error) {
       toast.error("Erro ao buscar endereço. Tente novamente.");
       console.error("Error fetching address:", error);
@@ -220,6 +237,44 @@ const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSu
                 </FormItem>
               )}
             />
+
+            {/* New number and complement fields side by side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Número</FormLabel>
+                    <FormControl>
+                      <Input 
+                        id="number-field"
+                        placeholder="Número" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="complement"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Complemento</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Apto, bloco, casa..." 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <FormField

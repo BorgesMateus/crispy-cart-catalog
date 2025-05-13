@@ -51,3 +51,39 @@ export const fetchAddressFromCEP = async (cep: string): Promise<{
   const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
   return response.json();
 };
+
+/**
+ * Creates a full address string combining address components
+ */
+export const createFullAddress = (
+  address: string,
+  number: string,
+  complement?: string,
+  district?: string,
+  city?: string,
+  state?: string
+): string => {
+  let fullAddress = address;
+  
+  // Add number (required)
+  if (number) {
+    fullAddress += `, ${number}`;
+  }
+  
+  // Add complement (optional)
+  if (complement && complement.trim() !== '') {
+    fullAddress += `, ${complement.trim()}`;
+  }
+  
+  // Add district (optional)
+  if (district && district.trim() !== '') {
+    fullAddress += `, ${district.trim()}`;
+  }
+  
+  // Add city and state (optional)
+  if (city && state) {
+    fullAddress += `, ${city}/${state}`;
+  }
+  
+  return fullAddress;
+};
