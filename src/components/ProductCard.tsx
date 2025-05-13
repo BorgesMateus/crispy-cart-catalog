@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
@@ -8,7 +7,6 @@ import { Plus, Minus, Package, Scale, Eye, Check } from 'lucide-react';
 import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 import ProductDetail from './ProductDetail';
-import { useDebounce } from '../hooks/useDebounce';
 import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
@@ -24,25 +22,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const currentItem = cartItems.find(item => item.product.id === product.id);
   const quantity = currentItem ? currentItem.quantity : 0;
   
-  // Separate state for input field value
+  // Local state for input field value - keep it as a string for better input control
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
   
-  // Create debounced version of the input value with 500ms delay
-  const debouncedInputValue = useDebounce<string>(inputValue, 500);
-  
-  // Update input value when cart quantity changes
+  // Update local state whenever cart quantity changes
   useEffect(() => {
     setInputValue(quantity.toString());
   }, [quantity]);
-  
-  // Update cart when the debounced input value changes
-  useEffect(() => {
-    const newQuantity = parseInt(debouncedInputValue) || 0;
-    // Only update if the quantity has actually changed and is valid
-    if (newQuantity !== quantity && newQuantity > 0) {
-      updateQuantity(product.id, newQuantity);
-    }
-  }, [debouncedInputValue, product.id, quantity, updateQuantity]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -90,14 +76,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
-  const handleAddToCart = () => {
-    addToCart(product);
-  };
-
-  const handleDecreaseQuantity = () => {
-    decreaseQuantity(product.id);
-  };
-  
   const handleApplyQuantity = () => {
     const newQuantity = parseInt(inputValue) || 0;
     if (newQuantity > 0) {
@@ -112,9 +90,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       });
     }
   };
+
+  const handleAddToCart = () => {
+    addToCart(product);
+  };
+
+  const handleDecreaseQuantity = () => {
+    decreaseQuantity(product.id);
+  };
   
   // Check if current input value is different from cart quantity
-  const hasQuantityChanged = parseInt(inputValue) !== quantity;
+  const hasQuantityChanged = parseInt(inputValue) !== quantity && inputValue !== '';
 
   return (
     <>
