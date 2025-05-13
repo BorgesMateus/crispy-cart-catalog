@@ -106,7 +106,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         <DialogHeader>
           <DialogTitle>{product.name}</DialogTitle>
           <DialogDescription className="text-sm text-gray-500">
-            {product.description}
+            {product.packageInfo}
           </DialogDescription>
         </DialogHeader>
         
@@ -119,6 +119,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         </div>
         
         <div className="mt-4 space-y-4">
+          {product.description && (
+            <div>
+              <p className="text-sm text-gray-600">{product.description}</p>
+            </div>
+          )}
+          
           {product.extraInfo?.usageTips && (
             <div>
               <h3 className="text-sm font-medium text-gray-700">Dicas de uso:</h3>
@@ -143,7 +149,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           {/* If no extraInfo at all, show a message */}
           {!product.extraInfo?.usageTips && 
            !product.extraInfo?.ingredients && 
-           !product.extraInfo?.funFact && (
+           !product.extraInfo?.funFact && 
+           !product.description && (
             <div>
               <p className="text-sm text-gray-500">Informações adicionais sobre este produto estarão disponíveis em breve.</p>
             </div>

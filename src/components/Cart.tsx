@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
@@ -40,6 +41,19 @@ const Cart: React.FC = () => {
     zipCode: string;
     referralSource: string;
   } | null>(null);
+  
+  // Lock body scroll when cart is open
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isCartOpen]);
   
   // Get the shipping cost for the selected city
   const shippingCost = selectedCity 
@@ -95,7 +109,7 @@ const Cart: React.FC = () => {
   const sendToWhatsApp = (includeCustomerInfo: boolean = false) => {
     // Generate WhatsApp message with order details
     const cartItemsText = cartItems
-      .map(item => `${item.quantity}x ${item.product.name} - R$${(item.product.price * item.quantity).toFixed(2)}`)
+      .map(item => `${item.quantity}x ${item.product.name} (${item.product.packageInfo}) - R$${(item.product.price * item.quantity).toFixed(2)} - Peso total: ${(item.product.weight * item.quantity).toFixed(2)}kg`)
       .join('\n');
 
     const shippingText = selectedCity 
@@ -184,7 +198,7 @@ const Cart: React.FC = () => {
           </Button>
         </div>
 
-        <div className="flex-grow overflow-auto p-4">
+        <div className="flex-grow overflow-auto p-4 overscroll-behavior-contain">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
               <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
@@ -209,13 +223,16 @@ const Cart: React.FC = () => {
                       
                       <div>
                         <h3 className="font-medium">{item.product.name}</h3>
+                        <p className="text-xs text-gray-500">{item.product.packageInfo}</p>
                         <p className="text-red-600 font-semibold">
                           R$ {item.product.price.toFixed(2)}
                         </p>
-                        <p className="text-xs text-gray-500">
-                          Peso: {item.product.weight.toFixed(2)}kg
-                          {item.product.isPackage && ' • Pacote'}
-                        </p>
+                        <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+                          <p>
+                            Peso: {item.product.weight.toFixed(2)}kg × {item.quantity} = {(item.product.weight * item.quantity).toFixed(2)}kg
+                          </p>
+                          {item.product.isPackage && <p>• Pacote</p>}
+                        </div>
                       </div>
                     </div>
                     

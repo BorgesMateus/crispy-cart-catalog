@@ -2,9 +2,10 @@
 export type Category = 
   | 'Salgados Fritos' 
   | 'Salgados Assados' 
-  | 'Pães' 
-  | 'Biscoitos' 
-  | 'Kits e Combos'
+  | 'Pães e Massas Doces' 
+  | 'Pão de Queijo'
+  | 'Biscoito de Queijo'
+  | 'Salgados Grandes'
   | 'Outros';
 
 export interface ProductExtraInfo {
@@ -20,6 +21,7 @@ export interface Product {
   images: string[];
   category: Category;
   description?: string;
+  packageInfo: string; // Information about packaging (e.g. "Pacote de 1kg")
   weight: number; // Weight in kg
   isPackage: boolean; // Whether this product counts as a package for minimum order
   featured?: boolean; // Whether this product should be featured
