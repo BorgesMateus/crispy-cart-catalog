@@ -35,9 +35,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   // Local state for input field value - keep it as a string for better input control
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
   
+  // Track if user is manually editing the field
+  const [manualEdit, setManualEdit] = useState(false);
+  
   // Update local state whenever cart quantity changes
   useEffect(() => {
     setInputValue(quantity.toString());
+    // Reset manual edit flag when cart changes from elsewhere
+    if (!manualEdit || parseInt(inputValue) === quantity) {
+      setManualEdit(false);
+    }
   }, [quantity]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +52,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     // Allow only numbers
     if (/^\d*$/.test(value)) {
       setInputValue(value);
+      setManualEdit(true); // Set manual edit mode when user types
     }
   };
 
@@ -52,6 +60,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     const newQuantity = parseInt(inputValue) || 0;
     if (newQuantity > 0) {
       updateQuantity(product.id, newQuantity);
+      setManualEdit(false); // Reset manual edit mode after applying
     } else {
       // Reset to current quantity if invalid
       setInputValue(quantity.toString());
@@ -71,8 +80,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     decreaseQuantity(product.id);
   };
   
-  // Check if current input value is different from cart quantity
-  const hasQuantityChanged = parseInt(inputValue) !== quantity && inputValue !== '';
+  // Only show apply button during manual edit AND when value is different
+  const showApplyButton = manualEdit && parseInt(inputValue) !== quantity;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -159,7 +168,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
-                {hasQuantityChanged && (
+                {showApplyButton && (
                   <Button
                     onClick={handleApplyQuantity}
                     variant="outline"

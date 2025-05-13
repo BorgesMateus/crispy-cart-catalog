@@ -22,12 +22,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const currentItem = cartItems.find(item => item.product.id === product.id);
   const quantity = currentItem ? currentItem.quantity : 0;
   
-  // Local state for input field value - keep it as a string for better input control
+  // Local state for input field value
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
+  
+  // Track if user is manually editing the field
+  const [manualEdit, setManualEdit] = useState(false);
   
   // Update local state whenever cart quantity changes
   useEffect(() => {
     setInputValue(quantity.toString());
+    // Reset manual edit flag when cart changes from elsewhere
+    if (!manualEdit || parseInt(inputValue) === quantity) {
+      setManualEdit(false);
+    }
   }, [quantity]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,44 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     // Allow only numbers
     if (/^\d*$/.test(value)) {
       setInputValue(value);
-    }
-  };
-
-  const handleInputBlur = () => {
-    // On blur, if value is valid, update the cart
-    const newQuantity = parseInt(inputValue) || 0;
-    if (newQuantity > 0) {
-      updateQuantity(product.id, newQuantity);
-    } else {
-      // Reset to current quantity if invalid
-      setInputValue(quantity.toString());
-      if (inputValue !== '' && inputValue !== '0') {
-        toast({
-          title: "Quantidade inválida",
-          description: "Por favor, insira um número maior que zero.",
-          variant: "destructive"
-        });
-      }
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Apply value when Enter key is pressed (for desktop users)
-    if (e.key === 'Enter') {
-      const newQuantity = parseInt(inputValue) || 0;
-      if (newQuantity > 0) {
-        updateQuantity(product.id, newQuantity);
-      } else {
-        // Reset to current quantity if invalid
-        setInputValue(quantity.toString());
-        toast({
-          title: "Quantidade inválida",
-          description: "Por favor, insira um número maior que zero.",
-          variant: "destructive"
-        });
-      }
-      // Remove focus from the input field
-      (e.target as HTMLInputElement).blur();
+      setManualEdit(true); // Set manual edit mode when user types
     }
   };
 
@@ -80,6 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const newQuantity = parseInt(inputValue) || 0;
     if (newQuantity > 0) {
       updateQuantity(product.id, newQuantity);
+      setManualEdit(false); // Reset manual edit mode after applying
     } else {
       // Reset to current quantity if invalid
       setInputValue(quantity.toString());
@@ -99,8 +70,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     decreaseQuantity(product.id);
   };
   
-  // Check if current input value is different from cart quantity
-  const hasQuantityChanged = parseInt(inputValue) !== quantity && inputValue !== '';
+  // Only show apply button during manual edit AND when value is different
+  const showApplyButton = manualEdit && parseInt(inputValue) !== quantity;
 
   return (
     <>
@@ -165,13 +136,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                onBlur={handleInputBlur}
-                onKeyDown={handleKeyDown}
                 className="mx-2 h-8 w-12 px-2 text-center"
                 inputMode="numeric" 
                 pattern="[0-9]*"
               />
-              {hasQuantityChanged && (
+              {showApplyButton && (
                 <Button
                   onClick={handleApplyQuantity}
                   variant="outline"
