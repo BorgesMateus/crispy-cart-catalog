@@ -17,6 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   
+  // Find this product in cart to get current quantity
   const currentItem = cartItems.find(item => item.product.id === product.id);
   const quantity = currentItem ? currentItem.quantity : 0;
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
@@ -31,16 +32,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     // Allow only numbers
     if (/^\d*$/.test(value)) {
       setInputValue(value);
-      
-      // Update quantity immediately when value changes
-      const newQuantity = parseInt(value) || 0;
-      updateQuantity(product.id, newQuantity);
     }
   };
 
   const handleInputBlur = () => {
     const newQuantity = parseInt(inputValue) || 0;
     updateQuantity(product.id, newQuantity);
+    // Ensure the displayed value matches what's in the cart
     setInputValue(newQuantity.toString());
   };
 
