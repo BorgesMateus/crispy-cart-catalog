@@ -51,6 +51,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     setInputValue(newQuantity.toString());
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Apply value when Enter key is pressed (for desktop users)
+    if (e.key === 'Enter') {
+      const newQuantity = parseInt(inputValue) || 0;
+      updateQuantity(product.id, newQuantity);
+      // Remove focus from the input field
+      (e.target as HTMLInputElement).blur();
+    }
+  };
+
   const handleAddToCart = () => {
     addToCart(product);
   };
@@ -140,7 +150,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 value={inputValue}
                 onChange={handleInputChange}
                 onBlur={handleInputBlur}
+                onKeyDown={handleKeyDown}
                 className="mx-2 h-8 w-12 px-2 text-center"
+                inputMode="numeric"
+                pattern="[0-9]*"
               />
               <Button
                 onClick={handleAddToCart}
