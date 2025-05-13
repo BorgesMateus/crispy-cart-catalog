@@ -14,14 +14,16 @@ interface FeaturedProductsProps {
   title: string;
   products: Product[];
   description?: string;
+  showFeatured?: boolean;
 }
 
 const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ 
   title, 
   products,
-  description 
+  description,
+  showFeatured = true
 }) => {
-  if (products.length === 0) return null;
+  if (products.length === 0 || !showFeatured) return null;
   
   return (
     <div className="mt-6 px-4">

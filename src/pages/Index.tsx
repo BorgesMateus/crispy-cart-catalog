@@ -39,6 +39,9 @@ const Index = () => {
     setFilteredProducts(result);
   }, [searchTerm, selectedCategory]);
 
+  // Only show featured products if on "all" category and not searching
+  const shouldShowFeatured = selectedCategory === 'all' && !searchTerm;
+
   return (
     <CartProvider>
       <div className="min-h-screen bg-gray-50">
@@ -61,14 +64,13 @@ const Index = () => {
             categories={CATEGORIES}
           />
           
-          {/* Featured Products (only show when no search term) */}
-          {!searchTerm && (
-            <FeaturedProducts 
-              title="Destaques da Semana" 
-              products={WEEKLY_TOP}
-              description="Os produtos mais pedidos pelos nossos clientes"
-            />
-          )}
+          {/* Featured Products (only show when no search term and on 'all' category) */}
+          <FeaturedProducts 
+            title="Destaques da Semana" 
+            products={WEEKLY_TOP}
+            description="Os produtos mais pedidos pelos nossos clientes"
+            showFeatured={shouldShowFeatured}
+          />
           
           {/* Kits Section - Only show when "Kits e Combos" is selected or "all" is selected */}
           {(selectedCategory === 'all' || selectedCategory === 'Kits e Combos') && !searchTerm && (
