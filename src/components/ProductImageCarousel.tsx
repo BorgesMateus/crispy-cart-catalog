@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -20,7 +20,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   productName,
   className
 }) => {
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const [imageError, setImageError] = useState<Record<string, boolean>>({});
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>, index: number) => {
+    setImageError(prev => ({...prev, [index]: true}));
     e.currentTarget.src = "/placeholder.svg"; // Default image if product image fails to load
   };
 
@@ -42,7 +45,21 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
         <img
           src={images[0]}
           alt={productName}
-          onError={handleImageError}
+          onError={(e) => handleImageError(e, 0)}
+          className="object-cover w-full h-full"
+        />
+      </div>
+    );
+  }
+
+  const validImages = images.filter((_, index) => !imageError[index]);
+  
+  if (validImages.length === 0) {
+    return (
+      <div className={cn("relative aspect-square overflow-hidden bg-gray-100", className)}>
+        <img
+          src="/placeholder.svg"
+          alt={productName}
           className="object-cover w-full h-full"
         />
       </div>
@@ -58,7 +75,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               <img
                 src={image}
                 alt={`${productName} - ${index + 1}`}
-                onError={handleImageError}
+                onError={(e) => handleImageError(e, index)}
                 className="object-cover w-full h-full"
               />
             </div>
