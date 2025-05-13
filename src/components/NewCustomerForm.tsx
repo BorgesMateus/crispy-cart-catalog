@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -34,7 +35,7 @@ const formSchema = z.object({
   district: z.string().optional(),
   city: z.string().min(2, { message: "Cidade deve ter pelo menos 2 caracteres" }),
   state: z.string().min(2, { message: "Estado deve ter pelo menos 2 caracteres" }),
-  referralSource: z.string().min(1, { message: "Por favor, selecione como nos conheceu antes de continuar" }),
+  referralSource: z.string({ required_error: "Selecione como nos conheceu" }),
 });
 
 const NewCustomerForm: React.FC<NewCustomerFormProps> = ({ isOpen, onClose, onSubmit, onExistingCustomer }) => {

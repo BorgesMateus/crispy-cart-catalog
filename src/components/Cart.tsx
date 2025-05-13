@@ -41,20 +41,6 @@ const Cart: React.FC = () => {
     referralSource: string;
   } | null>(null);
   
-  // Control body scroll when cart is open
-  useEffect(() => {
-    if (isCartOpen) {
-      document.body.style.overflow = 'hidden'; // Lock background scroll
-    } else {
-      document.body.style.overflow = 'auto'; // Enable scroll again
-    }
-    
-    // Cleanup function
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [isCartOpen]);
-  
   // Get the shipping cost for the selected city
   const shippingCost = selectedCity 
     ? SHIPPING_RATES.find(rate => rate.city === selectedCity)?.cost || 0
@@ -184,7 +170,7 @@ const Cart: React.FC = () => {
       />
 
       <aside 
-        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-96 bg-white shadow-xl transform transition-transform duration-300 cart-sidebar ${
+        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-96 bg-white shadow-xl transform transition-transform duration-300 overflow-hidden flex flex-col ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -198,7 +184,7 @@ const Cart: React.FC = () => {
           </Button>
         </div>
 
-        <div className="flex-grow overflow-auto p-4 touch-action-pan-y">
+        <div className="flex-grow overflow-auto p-4">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
               <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
@@ -321,7 +307,7 @@ const Cart: React.FC = () => {
 
         {/* City selection and shipping */}
         {cartItems.length > 0 && (
-          <div className="px-4 py-3 bg-gray-50 border-t relative">
+          <div className="px-4 py-3 bg-gray-50 border-t">
             <p className="text-sm mb-2 font-medium">Selecione sua cidade para entrega:</p>
             <CitySelector 
               selectedCity={selectedCity}
