@@ -6,7 +6,7 @@ import { MIN_PACKAGES, MIN_WEIGHT_KG } from '@/data/products';
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, quantity?: number) => void;
   decreaseQuantity: (productId: string) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -57,19 +57,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: Product) => {
-    console.log("CartContext - addToCart called with product:", product.name);
+  const addToCart = (product: Product, quantity: number = 1) => {
+    console.log("CartContext - addToCart called with product:", product.name, "quantity:", quantity);
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.product.id === product.id);
       
       if (existingItem) {
         return prevItems.map(item => 
           item.product.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 } 
+            ? { ...item, quantity: item.quantity + quantity } 
             : item
         );
       } else {
-        return [...prevItems, { product, quantity: 1 }];
+        return [...prevItems, { product, quantity }];
       }
     });
     
@@ -133,6 +133,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     setCartItems(prevItems => {
       console.log("CartContext - current cart items:", prevItems);
+      const existingItemIndex = prevItems.findIndex(item => item.product.id === productId);
+      
+      // If item doesn't exist in cart, nothing to update
+      if (existingItemIndex === -1) {
+        console.log("CartContext - item not found in cart, can't update");
+        return prevItems;
+      }
+      
       const newItems = prevItems.map(item => 
         item.product.id === productId 
           ? { ...item, quantity } 

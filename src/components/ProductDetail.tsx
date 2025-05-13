@@ -64,8 +64,17 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     console.log("ProductDetail - Parsed quantity =", newQuantity);
     
     if (newQuantity > 0) {
-      console.log("ProductDetail - Updating cart with new quantity:", newQuantity);
-      updateQuantity(product.id, newQuantity);
+      console.log("ProductDetail - Checking if product exists in cart");
+      const itemExists = cartItems.find(item => item.product.id === product.id);
+      
+      if (itemExists) {
+        console.log("ProductDetail - Product exists in cart, updating quantity to:", newQuantity);
+        updateQuantity(product.id, newQuantity);
+      } else {
+        console.log("ProductDetail - Product not in cart, adding with quantity:", newQuantity);
+        addToCart(product, newQuantity);
+      }
+      
       setManualEdit(false); // Reset manual edit mode after applying
       console.log("ProductDetail - Manual edit reset to:", false);
     } else {
