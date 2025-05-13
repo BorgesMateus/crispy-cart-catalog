@@ -41,6 +41,20 @@ const Cart: React.FC = () => {
     referralSource: string;
   } | null>(null);
   
+  // Control body scroll when cart is open
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden'; // Lock background scroll
+    } else {
+      document.body.style.overflow = 'auto'; // Enable scroll again
+    }
+    
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isCartOpen]);
+  
   // Get the shipping cost for the selected city
   const shippingCost = selectedCity 
     ? SHIPPING_RATES.find(rate => rate.city === selectedCity)?.cost || 0
@@ -184,7 +198,7 @@ const Cart: React.FC = () => {
           </Button>
         </div>
 
-        <div className="flex-grow overflow-auto p-4">
+        <div className="flex-grow overflow-auto p-4 touch-action-pan-y">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
               <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
