@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
@@ -8,6 +9,7 @@ import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 import ProductDetail from './ProductDetail';
 import { useDebounce } from '../hooks/useDebounce';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
   product: Product;
@@ -15,11 +17,14 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
+  const { toast } = useToast();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   
   // Find this product in cart to get current quantity
   const currentItem = cartItems.find(item => item.product.id === product.id);
   const quantity = currentItem ? currentItem.quantity : 0;
+  
+  // Separate state for input field value
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
   
   // Create debounced version of the input value with 500ms delay
@@ -33,8 +38,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   // Update cart when the debounced input value changes
   useEffect(() => {
     const newQuantity = parseInt(debouncedInputValue) || 0;
-    // Only update if the quantity has actually changed
-    if (newQuantity !== quantity) {
+    // Only update if the quantity has actually changed and is valid
+    if (newQuantity !== quantity && newQuantity > 0) {
       updateQuantity(product.id, newQuantity);
     }
   }, [debouncedInputValue, product.id, quantity, updateQuantity]);
@@ -48,18 +53,38 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleInputBlur = () => {
+    // On blur, if value is valid, update the cart
     const newQuantity = parseInt(inputValue) || 0;
-    // Always update cart quantity when input field loses focus
-    updateQuantity(product.id, newQuantity);
-    // Ensure the displayed value matches what's in the cart
-    setInputValue(newQuantity.toString());
+    if (newQuantity > 0) {
+      updateQuantity(product.id, newQuantity);
+    } else {
+      // Reset to current quantity if invalid
+      setInputValue(quantity.toString());
+      if (inputValue !== '' && inputValue !== '0') {
+        toast({
+          title: "Quantidade inválida",
+          description: "Por favor, insira um número maior que zero.",
+          variant: "destructive"
+        });
+      }
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Apply value when Enter key is pressed (for desktop users)
     if (e.key === 'Enter') {
       const newQuantity = parseInt(inputValue) || 0;
-      updateQuantity(product.id, newQuantity);
+      if (newQuantity > 0) {
+        updateQuantity(product.id, newQuantity);
+      } else {
+        // Reset to current quantity if invalid
+        setInputValue(quantity.toString());
+        toast({
+          title: "Quantidade inválida",
+          description: "Por favor, insira um número maior que zero.",
+          variant: "destructive"
+        });
+      }
       // Remove focus from the input field
       (e.target as HTMLInputElement).blur();
     }
@@ -75,7 +100,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
   const handleApplyQuantity = () => {
     const newQuantity = parseInt(inputValue) || 0;
-    updateQuantity(product.id, newQuantity);
+    if (newQuantity > 0) {
+      updateQuantity(product.id, newQuantity);
+    } else {
+      // Reset to current quantity if invalid
+      setInputValue(quantity.toString());
+      toast({
+        title: "Quantidade inválida",
+        description: "Por favor, insira um número maior que zero.",
+        variant: "destructive"
+      });
+    }
   };
   
   // Check if current input value is different from cart quantity

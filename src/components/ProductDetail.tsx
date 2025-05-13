@@ -14,6 +14,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductDetailProps {
   product: Product;
@@ -27,10 +28,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   onClose,
 }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
+  const { toast } = useToast();
   
   // Get current quantity from cart
   const currentItem = cartItems.find(item => item.product.id === product.id);
   const quantity = currentItem ? currentItem.quantity : 0;
+  
+  // Separate state for input field value
   const [inputValue, setInputValue] = useState<string>(quantity.toString());
   
   // Create debounced version of the input value with 500ms delay
@@ -44,8 +48,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   // Update cart when the debounced input value changes
   useEffect(() => {
     const newQuantity = parseInt(debouncedInputValue) || 0;
-    // Only update if the quantity has actually changed
-    if (newQuantity !== quantity) {
+    // Only update if the quantity has actually changed and is valid
+    if (newQuantity !== quantity && newQuantity > 0) {
       updateQuantity(product.id, newQuantity);
     }
   }, [debouncedInputValue, product.id, quantity, updateQuantity]);
@@ -59,16 +63,38 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   };
 
   const handleInputBlur = () => {
+    // On blur, if value is valid, update the cart
     const newQuantity = parseInt(inputValue) || 0;
-    updateQuantity(product.id, newQuantity);
-    setInputValue(newQuantity.toString());
+    if (newQuantity > 0) {
+      updateQuantity(product.id, newQuantity);
+    } else {
+      // Reset to current quantity if invalid
+      setInputValue(quantity.toString());
+      if (inputValue !== '' && inputValue !== '0') {
+        toast({
+          title: "Quantidade inválida",
+          description: "Por favor, insira um número maior que zero.",
+          variant: "destructive"
+        });
+      }
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Apply value when Enter key is pressed (for desktop users)
     if (e.key === 'Enter') {
       const newQuantity = parseInt(inputValue) || 0;
-      updateQuantity(product.id, newQuantity);
+      if (newQuantity > 0) {
+        updateQuantity(product.id, newQuantity);
+      } else {
+        // Reset to current quantity if invalid
+        setInputValue(quantity.toString());
+        toast({
+          title: "Quantidade inválida",
+          description: "Por favor, insira um número maior que zero.",
+          variant: "destructive"
+        });
+      }
       // Remove focus from the input field
       (e.target as HTMLInputElement).blur();
     }
@@ -84,7 +110,17 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   
   const handleApplyQuantity = () => {
     const newQuantity = parseInt(inputValue) || 0;
-    updateQuantity(product.id, newQuantity);
+    if (newQuantity > 0) {
+      updateQuantity(product.id, newQuantity);
+    } else {
+      // Reset to current quantity if invalid
+      setInputValue(quantity.toString());
+      toast({
+        title: "Quantidade inválida",
+        description: "Por favor, insira um número maior que zero.",
+        variant: "destructive"
+      });
+    }
   };
   
   // Check if current input value is different from cart quantity
