@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardFooter } from './ui/card';
-import { Plus, Minus, Package, Scale, Eye } from 'lucide-react';
+import { Plus, Minus, Package, Scale, Eye, Check } from 'lucide-react';
 import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 import ProductDetail from './ProductDetail';
@@ -73,6 +72,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleDecreaseQuantity = () => {
     decreaseQuantity(product.id);
   };
+  
+  const handleApplyQuantity = () => {
+    const newQuantity = parseInt(inputValue) || 0;
+    updateQuantity(product.id, newQuantity);
+  };
+  
+  // Check if current input value is different from cart quantity
+  const hasQuantityChanged = parseInt(inputValue) !== quantity;
 
   return (
     <>
@@ -132,16 +139,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             >
               <Minus className="h-4 w-4" />
             </Button>
-            <Input
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
-              onKeyDown={handleKeyDown}
-              className="mx-2 h-8 w-12 px-2 text-center"
-              inputMode="numeric" 
-              pattern="[0-9]*"
-            />
+            <div className="flex items-center">
+              <Input
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+                onKeyDown={handleKeyDown}
+                className="mx-2 h-8 w-12 px-2 text-center"
+                inputMode="numeric" 
+                pattern="[0-9]*"
+              />
+              {hasQuantityChanged && (
+                <Button
+                  onClick={handleApplyQuantity}
+                  variant="outline"
+                  size="sm"
+                  className="ml-1 h-8 px-2"
+                >
+                  <Check className="h-3 w-3 mr-1" /> Aplicar
+                </Button>
+              )}
+            </div>
             <Button
               onClick={handleAddToCart}
               variant="outline"

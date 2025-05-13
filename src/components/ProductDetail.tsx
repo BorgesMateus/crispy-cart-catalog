@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ProductImageCarousel from './ProductImageCarousel';
-import { Package, Scale, Plus, Minus } from 'lucide-react';
+import { Package, Scale, Plus, Minus, Check } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useCart } from '@/contexts/CartContext';
@@ -81,6 +81,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const handleDecreaseQuantity = () => {
     decreaseQuantity(product.id);
   };
+  
+  const handleApplyQuantity = () => {
+    const newQuantity = parseInt(inputValue) || 0;
+    updateQuantity(product.id, newQuantity);
+  };
+  
+  // Check if current input value is different from cart quantity
+  const hasQuantityChanged = parseInt(inputValue) !== quantity;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -158,16 +166,28 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               >
                 <Minus className="h-4 w-4" />
               </Button>
-              <Input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                onBlur={handleInputBlur}
-                onKeyDown={handleKeyDown}
-                className="mx-2 h-8 w-12 px-2 text-center"
-                inputMode="numeric"
-                pattern="[0-9]*"
-              />
+              <div className="flex items-center">
+                <Input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onBlur={handleInputBlur}
+                  onKeyDown={handleKeyDown}
+                  className="mx-2 h-8 w-12 px-2 text-center"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                />
+                {hasQuantityChanged && (
+                  <Button
+                    onClick={handleApplyQuantity}
+                    variant="outline"
+                    size="sm"
+                    className="ml-1 h-8 px-2"
+                  >
+                    <Check className="h-3 w-3 mr-1" /> Aplicar
+                  </Button>
+                )}
+              </div>
               <Button
                 onClick={handleAddToCart}
                 variant="outline"
