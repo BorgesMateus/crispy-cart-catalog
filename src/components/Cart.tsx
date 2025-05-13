@@ -196,15 +196,27 @@ const Cart: React.FC = () => {
               {cartItems.map(item => (
                 <div key={item.product.id} className="mb-4 bg-gray-50 rounded-lg p-3">
                   <div className="flex justify-between">
-                    <div className="flex-grow">
-                      <h3 className="font-medium">{item.product.name}</h3>
-                      <p className="text-red-600 font-semibold">
-                        R$ {item.product.price.toFixed(2)}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Peso: {item.product.weight.toFixed(2)}kg
-                        {item.product.isPackage && ' • Pacote'}
-                      </p>
+                    <div className="flex flex-grow">
+                      {/* Product Image Thumbnail */}
+                      <div className="w-12 h-12 mr-3 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
+                        <img 
+                          src={item.product.images[0] || "/placeholder.svg"} 
+                          alt={item.product.name}
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg" }}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-medium">{item.product.name}</h3>
+                        <p className="text-red-600 font-semibold">
+                          R$ {item.product.price.toFixed(2)}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Peso: {item.product.weight.toFixed(2)}kg
+                          {item.product.isPackage && ' • Pacote'}
+                        </p>
+                      </div>
                     </div>
                     
                     <Button 
