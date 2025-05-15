@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from '../contexts/CartContext';
 import { PRODUCTS, CATEGORIES } from '../data/products';
@@ -13,7 +12,7 @@ import KitCard from '@/components/KitCard';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, Cash } from "lucide-react";
+import { CreditCard, Wallet, DollarSign } from "lucide-react";
 
 // Define campeões de vendas (Jan-Abr 2025)
 const TOP_SELLING_PRODUCTS = [
@@ -53,7 +52,7 @@ const PaymentMethodsSection = () => (
     
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div className="flex items-start bg-white p-4 rounded-md border border-gray-200">
-        <Cash className="h-5 w-5 mr-3 text-gray-600 mt-0.5" />
+        <Wallet className="h-5 w-5 mr-3 text-gray-600 mt-0.5" />
         <div>
           <h3 className="font-medium mb-1">Dinheiro</h3>
           <p className="text-sm text-gray-500">Com troco se necessário</p>
@@ -257,7 +256,7 @@ const Index = () => {
                 <p className="text-sm text-gray-500">Dinheiro ou cartão (crédito/débito)</p>
               </div>
               <div className="flex items-center gap-3">
-                <Cash className="h-5 w-5 text-gray-600" />
+                <Wallet className="h-5 w-5 text-gray-600" />
                 <CreditCard className="h-5 w-5 text-gray-600" />
               </div>
             </div>
