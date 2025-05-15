@@ -150,6 +150,7 @@ const Index = () => {
               products={championsProducts}
               description="Os produtos mais vendidos entre Jan-Abr/2025"
               showFeatured={true}
+              autoplay={true} // Enable autoplay for champions products
             />
           )}
           
@@ -159,6 +160,7 @@ const Index = () => {
             products={WEEKLY_TOP}
             description="Os produtos mais pedidos pelos nossos clientes"
             showFeatured={shouldShowFeatured}
+            autoplay={false} // No autoplay for weekly top products
           />
           
           {/* Kits Section - Only show when on "all" and not searching */}

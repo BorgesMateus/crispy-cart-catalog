@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
@@ -18,6 +17,8 @@ type CarouselProps = {
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
+  autoplay?: boolean
+  autoplayDelay?: number
 }
 
 type CarouselContextProps = {
@@ -27,6 +28,8 @@ type CarouselContextProps = {
   scrollNext: () => void
   canScrollPrev: boolean
   canScrollNext: boolean
+  autoplay?: boolean
+  autoplayDelay?: number
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -53,20 +56,26 @@ const Carousel = React.forwardRef<
       plugins,
       className,
       children,
+      autoplay = false,
+      autoplayDelay = 5000,
       ...props
     },
     ref
   ) => {
-    // Set default options with improved partial visible slides
+    // Set default options with improved partial visible slides and center alignment
     const defaultOpts = {
       ...opts,
       axis: orientation === "horizontal" ? "x" as const : "y" as const, // Fixed typings here
       dragFree: true, // Enables momentum scrolling
+      align: "center", // Centers the active slide
+      containScroll: "trimSnaps" as const, // Ensures proper alignment of slides
     }
     
     const [carouselRef, api] = useEmblaCarousel(defaultOpts, plugins)
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [userInteracting, setUserInteracting] = React.useState(false)
+    const autoplayTimerRef = React.useRef<NodeJS.Timeout | null>(null)
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
@@ -98,6 +107,37 @@ const Carousel = React.forwardRef<
       [scrollPrev, scrollNext]
     )
 
+    // Setup autoplay functionality
+    const startAutoplay = React.useCallback(() => {
+      if (!autoplay || !api || userInteracting) return
+      
+      // Clear any existing timer
+      if (autoplayTimerRef.current) {
+        clearInterval(autoplayTimerRef.current)
+      }
+      
+      // Start a new timer for autoplay
+      autoplayTimerRef.current = setInterval(() => {
+        if (!userInteracting) {
+          api.scrollNext()
+        }
+      }, autoplayDelay)
+    }, [api, autoplay, autoplayDelay, userInteracting])
+    
+    // Handle user interaction with the carousel
+    const handlePointerDown = React.useCallback(() => {
+      setUserInteracting(true)
+      if (autoplayTimerRef.current) {
+        clearInterval(autoplayTimerRef.current)
+      }
+    }, [])
+    
+    const handlePointerUp = React.useCallback(() => {
+      setUserInteracting(false)
+      // Restart autoplay after interaction
+      startAutoplay()
+    }, [startAutoplay])
+
     React.useEffect(() => {
       if (!api || !setApi) {
         return
@@ -119,6 +159,26 @@ const Carousel = React.forwardRef<
         api?.off("select", onSelect)
       }
     }, [api, onSelect])
+    
+    // Set up autoplay and handle user interaction
+    React.useEffect(() => {
+      if (!api) return
+      
+      // Start autoplay when component mounts
+      startAutoplay()
+      
+      // Event listeners for user interaction
+      api.on("pointerDown", handlePointerDown)
+      api.on("pointerUp", handlePointerUp)
+      
+      return () => {
+        if (autoplayTimerRef.current) {
+          clearInterval(autoplayTimerRef.current)
+        }
+        api.off("pointerDown", handlePointerDown)
+        api.off("pointerUp", handlePointerUp)
+      }
+    }, [api, startAutoplay, handlePointerDown, handlePointerUp])
 
     return (
       <CarouselContext.Provider
@@ -132,6 +192,8 @@ const Carousel = React.forwardRef<
           scrollNext,
           canScrollPrev,
           canScrollNext,
+          autoplay,
+          autoplayDelay,
         }}
       >
         <div

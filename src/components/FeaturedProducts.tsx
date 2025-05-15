@@ -16,13 +16,15 @@ interface FeaturedProductsProps {
   products: Product[];
   description?: string;
   showFeatured?: boolean;
+  autoplay?: boolean;
 }
 
 const FeaturedProducts: React.FC<FeaturedProductsProps> = ({ 
   title, 
   products,
   description,
-  showFeatured = true
+  showFeatured = true,
+  autoplay = false
 }) => {
   const isMobile = useIsMobile();
   
@@ -43,10 +45,12 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
       <div className="relative">
         <Carousel
           opts={{
-            align: "start",
+            align: "center", // Centers slides
             loop: products.length > 3,
-            containScroll: false, // Allow overscrolling to see partial next item
+            containScroll: "trimSnaps" as const, // Ensures proper alignment of slides
           }}
+          autoplay={autoplay} // Enable autoplay for specific carousels
+          autoplayDelay={5000} // 5 seconds delay between slides
           className="w-full"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
