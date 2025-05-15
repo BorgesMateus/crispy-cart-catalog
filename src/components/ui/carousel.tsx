@@ -1,6 +1,9 @@
+
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
+  type EmblaOptionsType,
+  type EmblaCarouselType
 } from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
@@ -19,6 +22,7 @@ type CarouselProps = {
   setApi?: (api: CarouselApi) => void
   autoplay?: boolean
   autoplayDelay?: number
+  autoplayPauseOnInteraction?: boolean
 }
 
 type CarouselContextProps = {
@@ -58,16 +62,17 @@ const Carousel = React.forwardRef<
       children,
       autoplay = false,
       autoplayDelay = 5000,
+      autoplayPauseOnInteraction = true,
       ...props
     },
     ref
   ) => {
     // Set default options with improved partial visible slides and center alignment
-    const defaultOpts = {
+    const defaultOpts: EmblaOptionsType = {
       ...opts,
-      axis: orientation === "horizontal" ? "x" as const : "y" as const, // Fixed typings here
+      axis: orientation === "horizontal" ? "x" as const : "y" as const,
       dragFree: true, // Enables momentum scrolling
-      align: "center", // Centers the active slide
+      align: "center" as const, // Centers the active slide
       containScroll: "trimSnaps" as const, // Ensures proper alignment of slides
     }
     
@@ -76,6 +81,8 @@ const Carousel = React.forwardRef<
     const [canScrollNext, setCanScrollNext] = React.useState(false)
     const [userInteracting, setUserInteracting] = React.useState(false)
     const autoplayTimerRef = React.useRef<NodeJS.Timeout | null>(null)
+    const userInactivityTimerRef = React.useRef<NodeJS.Timeout | null>(null)
+    const inactivityDelayMs = 10000 // 10 seconds of inactivity before resuming autoplay
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
@@ -130,13 +137,31 @@ const Carousel = React.forwardRef<
       if (autoplayTimerRef.current) {
         clearInterval(autoplayTimerRef.current)
       }
+      
+      // Clear any existing inactivity timer
+      if (userInactivityTimerRef.current) {
+        clearTimeout(userInactivityTimerRef.current)
+      }
     }, [])
     
     const handlePointerUp = React.useCallback(() => {
-      setUserInteracting(false)
-      // Restart autoplay after interaction
-      startAutoplay()
-    }, [startAutoplay])
+      if (api) {
+        // Auto-center the carousel to the nearest slide
+        api.scrollTo(api.selectedScrollSnap())
+      }
+      
+      if (autoplayPauseOnInteraction) {
+        // Start inactivity timer to resume autoplay
+        userInactivityTimerRef.current = setTimeout(() => {
+          setUserInteracting(false)
+          startAutoplay()
+        }, inactivityDelayMs)
+      } else {
+        // If not pausing on interaction, resume immediately
+        setUserInteracting(false)
+        startAutoplay()
+      }
+    }, [api, autoplayPauseOnInteraction, startAutoplay])
 
     React.useEffect(() => {
       if (!api || !setApi) {
@@ -171,14 +196,39 @@ const Carousel = React.forwardRef<
       api.on("pointerDown", handlePointerDown)
       api.on("pointerUp", handlePointerUp)
       
+      // Add drag listeners to ensure smooth centering
+      const handleDragEnd = () => {
+        if (api) {
+          // When drag ends, ensure slide is centered
+          api.scrollTo(api.selectedScrollSnap())
+        }
+      }
+      
+      api.on("settle", handleDragEnd)
+      
       return () => {
         if (autoplayTimerRef.current) {
           clearInterval(autoplayTimerRef.current)
         }
+        if (userInactivityTimerRef.current) {
+          clearTimeout(userInactivityTimerRef.current)
+        }
         api.off("pointerDown", handlePointerDown)
         api.off("pointerUp", handlePointerUp)
+        api.off("settle", handleDragEnd)
       }
     }, [api, startAutoplay, handlePointerDown, handlePointerUp])
+
+    // Create transitions for smoother experience
+    React.useEffect(() => {
+      if (!api) return
+      
+      // Add smooth transitions to carousel
+      const rootNode = api.rootNode()
+      if (rootNode) {
+        rootNode.style.transition = "all 300ms ease"
+      }
+    }, [api])
 
     return (
       <CarouselContext.Provider
