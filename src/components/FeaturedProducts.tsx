@@ -46,9 +46,9 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
       <div className="relative">
         <Carousel
           opts={{
-            align: "center" as const, // Centers slides with proper type
+            align: "center",
             loop: products.length > 3,
-            containScroll: "trimSnaps" as const, // Ensures proper alignment of slides
+            containScroll: "trimSnaps",
           }}
           autoplay={autoplay} // Enable autoplay for specific carousels
           autoplayDelay={5000} // 5 seconds delay between slides
