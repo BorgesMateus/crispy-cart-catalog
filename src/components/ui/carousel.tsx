@@ -60,7 +60,7 @@ const Carousel = React.forwardRef<
     // Set default options with improved partial visible slides
     const defaultOpts = {
       ...opts,
-      axis: orientation === "horizontal" ? "x" : "y",
+      axis: orientation === "horizontal" ? "x" as const : "y" as const, // Fixed typings here
       dragFree: true, // Enables momentum scrolling
     }
     
