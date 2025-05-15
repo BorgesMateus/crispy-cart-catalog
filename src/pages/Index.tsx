@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from '../contexts/CartContext';
 import { PRODUCTS, CATEGORIES } from '../data/products';
@@ -11,6 +12,8 @@ import { KITS } from '@/data/kits';
 import KitCard from '@/components/KitCard';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CreditCard, Cash } from "lucide-react";
 
 // Define campeões de vendas (Jan-Abr 2025)
 const TOP_SELLING_PRODUCTS = [
@@ -36,6 +39,41 @@ const ORDERED_CATEGORIES: Category[] = [
   'Salgados Grandes',
   'Outros'
 ];
+
+const PaymentMethodsSection = () => (
+  <div className="mt-10 px-4 py-6 bg-gray-50 rounded-lg border border-gray-200">
+    <h2 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+      <CreditCard className="mr-2" /> 
+      Formas de Pagamento
+    </h2>
+    
+    <p className="text-gray-600 mb-4">
+      Pagamento realizado no momento da entrega.
+    </p>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div className="flex items-start bg-white p-4 rounded-md border border-gray-200">
+        <Cash className="h-5 w-5 mr-3 text-gray-600 mt-0.5" />
+        <div>
+          <h3 className="font-medium mb-1">Dinheiro</h3>
+          <p className="text-sm text-gray-500">Com troco se necessário</p>
+        </div>
+      </div>
+      
+      <div className="flex items-start bg-white p-4 rounded-md border border-gray-200">
+        <CreditCard className="h-5 w-5 mr-3 text-gray-600 mt-0.5" />
+        <div>
+          <h3 className="font-medium mb-1">Cartão de crédito e débito</h3>
+          <p className="text-sm text-gray-500">Maquininha disponível</p>
+        </div>
+      </div>
+    </div>
+    
+    <p className="text-sm italic text-gray-500">
+      (Confirme com o atendente pelo WhatsApp)
+    </p>
+  </div>
+);
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -143,16 +181,14 @@ const Index = () => {
             categories={ORDERED_CATEGORIES}
           />
           
-          {/* Champions Products Section - Always show on homepage, hide during search */}
-          {!searchTerm && championsProducts.length > 0 && (
-            <FeaturedProducts 
-              title="🏆 Produtos Campeões de Vendas" 
-              products={championsProducts}
-              description="Os produtos mais vendidos entre Jan-Abr/2025"
-              showFeatured={true}
-              autoplay={true} // Enable autoplay for champions products
-            />
-          )}
+          {/* Champions Products Section - Only show on homepage (all category), hide during search */}
+          <FeaturedProducts 
+            title="🏆 Produtos Campeões de Vendas" 
+            products={championsProducts}
+            description="Os produtos mais vendidos em 2025"
+            showFeatured={shouldShowFeatured}
+            autoplay={true} // Enable autoplay for champions products
+          />
           
           {/* Weekly Top Products - regular featured products */}
           <FeaturedProducts 
@@ -174,6 +210,9 @@ const Index = () => {
               </div>
             </div>
           )}
+          
+          {/* Payment Methods Section - Always show, regardless of category or search */}
+          {!searchTerm && <PaymentMethodsSection />}
           
           {/* Show divider if both kits and products are displayed */}
           {selectedCategory === 'all' && 
@@ -209,11 +248,24 @@ const Index = () => {
           </div>
         </main>
         
-        {/* Footer */}
+        {/* Footer with Payment Methods Reminder */}
         <footer className="bg-gray-100 py-6 border-t">
-          <div className="container mx-auto px-4 text-center text-gray-500">
-            <p>&copy; {new Date().getFullYear()} Catálogo Interativo. Todos os direitos reservados.</p>
-            <p className="text-sm mt-1 text-gray-400">Desenvolvido por Mateus Borges</p>
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-4">
+              <div className="text-center md:text-left">
+                <p className="text-gray-800 font-medium">💳 Pagamento feito na entrega</p>
+                <p className="text-sm text-gray-500">Dinheiro ou cartão (crédito/débito)</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Cash className="h-5 w-5 text-gray-600" />
+                <CreditCard className="h-5 w-5 text-gray-600" />
+              </div>
+            </div>
+            
+            <div className="border-t pt-4 text-center text-gray-500">
+              <p>&copy; {new Date().getFullYear()} Catálogo Interativo. Todos os direitos reservados.</p>
+              <p className="text-sm mt-1 text-gray-400">Desenvolvido por Mateus Borges</p>
+            </div>
           </div>
         </footer>
         
