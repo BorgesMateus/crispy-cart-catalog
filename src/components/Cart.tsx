@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
-import { X, Trash2, Plus, Minus, ShoppingCart, Package, Scale } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingCart, Package, Scale, CreditCard, Wallet, DollarSign } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { Progress } from './ui/progress';
 import { toast } from '@/components/ui/sonner';
@@ -161,6 +160,32 @@ const Cart: React.FC = () => {
     // For returning customers or when user cancels form, send to WhatsApp directly without customer info
     sendToWhatsApp(false);
   };
+
+  const PaymentMethodsSection = () => (
+    <div className="px-4 py-3 bg-gray-50 border-t">
+      <h3 className="text-sm font-medium mb-2 flex items-center">
+        <CreditCard className="h-4 w-4 mr-1.5 text-gray-600" /> 
+        Formas de Pagamento
+      </h3>
+      <div className="space-y-2 mb-2">
+        <div className="flex items-center text-sm text-gray-700">
+          <CreditCard className="h-3.5 w-3.5 mr-2 text-gray-500" />
+          <span>Cartão de crédito e débito (maquininha disponível)</span>
+        </div>
+        <div className="flex items-center text-sm text-gray-700">
+          <DollarSign className="h-3.5 w-3.5 mr-2 text-gray-500" />
+          <span>Pix</span>
+        </div>
+        <div className="flex items-center text-sm text-gray-700">
+          <Wallet className="h-3.5 w-3.5 mr-2 text-gray-500" />
+          <span>Dinheiro (com troco, se necessário)</span>
+        </div>
+      </div>
+      <p className="text-xs italic text-gray-500 mt-1">
+        (Confirme com o atendente pelo WhatsApp caso tenha dúvidas)
+      </p>
+    </div>
+  );
 
   return (
     <>
@@ -337,6 +362,9 @@ const Cart: React.FC = () => {
             )}
           </div>
         )}
+
+        {/* Payment Methods Section */}
+        {cartItems.length > 0 && <PaymentMethodsSection />}
 
         {/* Cart total and checkout button */}
         <div className="p-4 border-t">
