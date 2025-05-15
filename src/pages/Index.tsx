@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from '../contexts/CartContext';
 import { PRODUCTS, CATEGORIES } from '../data/products';
-import { Category } from '../types/products';
+import { Category, Product } from '../types/products';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
 import Cart from '../components/Cart';
@@ -13,13 +13,50 @@ import KitCard from '@/components/KitCard';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
 
+// Define top selling products based on sales data (Jan-Apr 2025)
+const TOP_SELLING_PRODUCTS = [
+  "PAO DE QUEIJO PREMIUM 30G PCT 5KG",
+  "PAO DE QUEIJO GG 25G PCT 1KG",
+  "SALG FESTA COXINHA PCT 50 UNID",
+  "MINI ESFIRRA DE CARNE ASSADO PCT 50 UNID",
+  "BISCOITO DE QUEIJO GG PCT 1KG",
+  "PAO DE QUEIJO GG 55G PCT 5KG",
+  "ENR SALSICHA C/ MOLHO ASSADO G PCT 10 UNID",
+  "MINI ENR DE SALSICHA ASSADO PCT 50 UNID",
+  "PAO DE QUEIJO RECHEADO C/ LINGUICA APIMENTADA PCT 1KG",
+  "QUEBRADOR DE QUEIJO SF 20G PCT 800G"
+];
+
+// Sort categories based on sales data
+const ORDERED_CATEGORIES: Category[] = [
+  'Pão de Queijo',
+  'Salgados Assados',
+  'Salgados Fritos',
+  'Pães e Massas Doces',
+  'Biscoito de Queijo',
+  'Salgados Grandes',
+  'Outros'
+];
+
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [filteredProducts, setFilteredProducts] = useState(PRODUCTS);
+  const [mostSoldProducts, setMostSoldProducts] = useState<Product[]>([]);
+
+  // Get top selling products
+  useEffect(() => {
+    const topProducts = PRODUCTS.filter(product => 
+      TOP_SELLING_PRODUCTS.some(topName => 
+        normalizeText(product.name).includes(normalizeText(topName))
+      )
+    );
+    setMostSoldProducts(topProducts);
+  }, []);
 
   // Filter products based on search term and selected category
   useEffect(() => {
+    // Using the global search approach
     let result = PRODUCTS;
     
     // When search term exists, filter products globally regardless of category
@@ -28,13 +65,27 @@ const Index = () => {
       result = PRODUCTS.filter(product => 
         normalizeText(product.name).includes(normalizedTerm) || 
         (product.description && normalizeText(product.description).includes(normalizedTerm)) ||
-        product.id.toLowerCase().includes(normalizedTerm) // Busca também por código
+        product.id.toLowerCase().includes(normalizedTerm) // Also search by code
       );
     }
-    // Only apply category filter if not searching or if explicitly requested
+    // Only apply category filter if not searching
     else if (selectedCategory !== 'all') {
       result = result.filter(product => product.category === selectedCategory);
     }
+    
+    // Sort products - top selling products first within their categories
+    result = [...result].sort((a, b) => {
+      const aIsTopSelling = TOP_SELLING_PRODUCTS.some(topName => 
+        normalizeText(a.name).includes(normalizeText(topName))
+      );
+      const bIsTopSelling = TOP_SELLING_PRODUCTS.some(topName => 
+        normalizeText(b.name).includes(normalizeText(topName))
+      );
+      
+      if (aIsTopSelling && !bIsTopSelling) return -1;
+      if (!aIsTopSelling && bIsTopSelling) return 1;
+      return 0;
+    });
     
     setFilteredProducts(result);
   }, [searchTerm, selectedCategory]);
@@ -64,16 +115,26 @@ const Index = () => {
             setSearchTerm={setSearchTerm}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-            categories={CATEGORIES}
+            categories={ORDERED_CATEGORIES}
           />
           
-          {/* Featured Products (only show when no search term and on 'all' category) */}
+          {/* Weekly Top Products - regular featured products */}
           <FeaturedProducts 
             title="Destaques da Semana" 
             products={WEEKLY_TOP}
             description="Os produtos mais pedidos pelos nossos clientes"
             showFeatured={shouldShowFeatured}
           />
+          
+          {/* Most Sold Products Section - Only show on all category and not searching */}
+          {selectedCategory === 'all' && !searchTerm && mostSoldProducts.length > 0 && (
+            <FeaturedProducts 
+              title="🔥 Mais Vendidos" 
+              products={mostSoldProducts}
+              description="Produtos campeões de vendas (Jan-Abr 2025)"
+              showFeatured={true}
+            />
+          )}
           
           {/* Kits Section - Only show when on "all" and not searching */}
           {selectedCategory === 'all' && !searchTerm && KITS.length > 0 && (

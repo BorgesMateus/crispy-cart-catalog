@@ -31,6 +31,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
     }
   };
 
+  // New ordered categories based on sales analysis
+  const orderedCategories: (Category | 'all')[] = [
+    'all',
+    'Pão de Queijo',
+    'Salgados Assados',
+    'Salgados Fritos',
+    'Pães e Massas Doces',
+    'Biscoito de Queijo',
+    'Salgados Grandes',
+    'Outros'
+  ];
+
   return (
     <div className="sticky top-0 z-20 bg-white pb-2 pt-4 px-4 shadow-sm">
       <div className="relative mb-4">
@@ -56,19 +68,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       </div>
       
       <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4">
-        <Badge
-          variant={selectedCategory === 'all' ? 'default' : 'outline'}
-          className={`cursor-pointer ${
-            selectedCategory === 'all' 
-              ? 'bg-red-600 hover:bg-red-700' 
-              : 'hover:bg-gray-100'
-          }`}
-          onClick={() => setSelectedCategory('all')}
-        >
-          Todos
-        </Badge>
-        
-        {categories.map((category) => (
+        {orderedCategories.map((category) => (
           <Badge
             key={category}
             variant={selectedCategory === category ? 'default' : 'outline'}
@@ -79,7 +79,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             }`}
             onClick={() => setSelectedCategory(category)}
           >
-            {category}
+            {category === 'all' ? 'Todos' : category}
           </Badge>
         ))}
       </div>
