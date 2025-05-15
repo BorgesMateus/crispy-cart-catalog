@@ -6,6 +6,7 @@ export type Category =
   | 'Pão de Queijo'
   | 'Biscoito de Queijo'
   | 'Salgados Grandes'
+  | 'Kits e Combos'
   | 'Outros';
 
 export interface ProductExtraInfo {
@@ -26,6 +27,7 @@ export interface Product {
   isPackage: boolean; // Whether this product counts as a package for minimum order
   featured?: boolean; // Whether this product should be featured
   extraInfo?: ProductExtraInfo; // Additional information for expandable view
+  inStock?: boolean; // Whether this product is in stock (optional, defaults to true)
 }
 
 export interface CartItem {

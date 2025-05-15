@@ -4,7 +4,7 @@ import { Product } from '../types/products';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardFooter } from './ui/card';
-import { Plus, Minus, Package, Scale, Eye, Check } from 'lucide-react';
+import { Plus, Minus, Package, Scale, Eye, Check, XCircle } from 'lucide-react';
 import { Input } from './ui/input';
 import ProductImageCarousel from './ProductImageCarousel';
 import ProductDetail from './ProductDetail';
@@ -19,6 +19,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
   const { toast: shadcnToast } = useToast();
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  
+  // Product is in stock by default unless explicitly set to false
+  const isInStock = product.inStock !== false;
   
   // Find this product in cart to get current quantity
   const currentItem = cartItems.find(item => item.product.id === product.id);
@@ -78,6 +81,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   const handleAddToCart = () => {
+    if (!isInStock) {
+      toast("Produto indisponível", {
+        description: "Este produto está temporariamente fora de estoque."
+      });
+      return;
+    }
     addToCart(product);
   };
 
@@ -105,6 +114,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {product.featured && (
             <div className="absolute top-2 left-2 bg-yellow-500 text-white font-bold px-2 py-1 rounded-full text-xs">
               Destaque
+            </div>
+          )}
+          {!isInStock && (
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-red-600 text-white font-bold px-3 py-2 rounded-md text-sm">
+                SEM ESTOQUE
+              </div>
             </div>
           )}
         </div>
@@ -141,45 +157,58 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </Button>
         </CardContent>
         <CardFooter className="pt-0 flex justify-between items-center">
-          <div className="flex items-center">
-            <Button
-              onClick={handleDecreaseQuantity}
-              variant="outline"
-              size="icon"
-              className={`rounded-full h-8 w-8 ${quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={quantity === 0}
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
+          {isInStock ? (
             <div className="flex items-center">
-              <Input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                className="mx-2 h-8 w-12 px-2 text-center"
-                inputMode="numeric" 
-                pattern="[0-9]*"
-              />
-              {showApplyButton && (
-                <Button
-                  onClick={handleApplyQuantity}
-                  variant="outline"
-                  size="sm"
-                  className="ml-1 h-8 px-2"
-                >
-                  <Check className="h-3 w-3 mr-1" /> Aplicar
-                </Button>
-              )}
+              <Button
+                onClick={handleDecreaseQuantity}
+                variant="outline"
+                size="icon"
+                className={`rounded-full h-8 w-8 ${quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={quantity === 0}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <div className="flex items-center">
+                <Input
+                  type="text"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  className="mx-2 h-8 w-12 px-2 text-center"
+                  inputMode="numeric" 
+                  pattern="[0-9]*"
+                />
+                {showApplyButton && (
+                  <Button
+                    onClick={handleApplyQuantity}
+                    variant="outline"
+                    size="sm"
+                    className="ml-1 h-8 px-2"
+                  >
+                    <Check className="h-3 w-3 mr-1" /> Aplicar
+                  </Button>
+                )}
+              </div>
+              <Button
+                onClick={handleAddToCart}
+                variant="outline"
+                size="icon"
+                className="rounded-full h-8 w-8"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
-            <Button
-              onClick={handleAddToCart}
-              variant="outline"
-              size="icon"
-              className="rounded-full h-8 w-8"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          ) : (
+            <div className="flex items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-red-500 border-red-500"
+                disabled
+              >
+                <XCircle className="h-4 w-4 mr-1" /> Indisponível
+              </Button>
+            </div>
+          )}
         </CardFooter>
       </Card>
       

@@ -32,7 +32,7 @@ const Index = () => {
     }
     
     // Then filter by category if not "all"
-    if (selectedCategory !== 'all' && selectedCategory !== 'Kits e Combos') {
+    if (selectedCategory !== 'all') {
       result = result.filter(product => product.category === selectedCategory);
     }
     
@@ -72,8 +72,8 @@ const Index = () => {
             showFeatured={shouldShowFeatured}
           />
           
-          {/* Kits Section - Only show when "Kits e Combos" is selected or "all" is selected */}
-          {(selectedCategory === 'all' || selectedCategory === 'Kits e Combos') && !searchTerm && (
+          {/* Kits Section - Only show when on "all" and not searching */}
+          {selectedCategory === 'all' && !searchTerm && KITS.length > 0 && (
             <div className="mt-6 px-4">
               <h2 className="text-xl font-bold mb-4 text-gray-800">Kits e Combos</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -85,30 +85,28 @@ const Index = () => {
           )}
           
           {/* Show divider if both kits and products are displayed */}
-          {(selectedCategory === 'all' || selectedCategory === 'Kits e Combos') && 
-           filteredProducts.length > 0 && !searchTerm && (
+          {selectedCategory === 'all' && 
+           filteredProducts.length > 0 && !searchTerm && KITS.length > 0 && (
             <div className="border-t my-8 mx-4"></div>
           )}
           
           {/* Products Grid */}
-          {(selectedCategory !== 'Kits e Combos' || searchTerm || filteredProducts.length > 0) && (
-            <div className="p-4">
-              {selectedCategory === 'all' && !searchTerm && <h2 className="text-xl font-bold mb-4 text-gray-800">Produtos</h2>}
-              
-              {filteredProducts.length === 0 ? (
-                <div className="text-center py-20">
-                  <h2 className="text-2xl font-semibold text-gray-500">Nenhum produto encontrado</h2>
-                  <p className="text-gray-400 mt-2">Tente uma busca diferente ou outra categoria.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {filteredProducts.map(product => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          <div className="p-4">
+            {selectedCategory === 'all' && !searchTerm && <h2 className="text-xl font-bold mb-4 text-gray-800">Produtos</h2>}
+            
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-20">
+                <h2 className="text-2xl font-semibold text-gray-500">Nenhum produto encontrado</h2>
+                <p className="text-gray-400 mt-2">Tente uma busca diferente ou outra categoria.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </div>
         </main>
         
         {/* Footer */}
