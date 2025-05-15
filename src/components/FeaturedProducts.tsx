@@ -9,6 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface FeaturedProductsProps {
   title: string;
@@ -23,7 +24,12 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   description,
   showFeatured = true
 }) => {
+  const isMobile = useIsMobile();
+  
   if (products.length === 0 || !showFeatured) return null;
+  
+  // Calculate card widths based on screen size
+  const cardWidth = isMobile ? 85 : 70; // percentage of container width
   
   return (
     <div className="mt-6 px-4">
@@ -34,29 +40,35 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
         </div>
       </div>
       
-      <Carousel
-        opts={{
-          align: "start",
-          loop: products.length > 3,
-          containScroll: "trimSnaps"
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="-ml-2 md:-ml-4">
-          {products.map(product => (
-            <CarouselItem 
-              key={product.id} 
-              className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
-            >
-              <ProductCard product={product} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <div className="flex justify-end gap-2 mt-2">
-          <CarouselPrevious className="relative left-0 right-auto -translate-y-0 translate-x-0" />
-          <CarouselNext className="relative right-0 left-auto -translate-y-0 translate-x-0" />
-        </div>
-      </Carousel>
+      <div className="relative">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: products.length > 3,
+            containScroll: false, // Allow overscrolling to see partial next item
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {products.map(product => (
+              <CarouselItem 
+                key={product.id} 
+                className={`pl-2 md:pl-4`}
+                style={{ width: `${cardWidth}%` }} // Dynamic width based on screen size
+              >
+                <ProductCard product={product} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="flex justify-end gap-2 mt-2">
+            <CarouselPrevious className="relative left-0 right-auto -translate-y-0 translate-x-0" />
+            <CarouselNext className="relative right-0 left-auto -translate-y-0 translate-x-0" />
+          </div>
+        </Carousel>
+        
+        {/* Add visual indicator for horizontal scrollability */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-full bg-gradient-to-l from-white/80 to-transparent pointer-events-none"></div>
+      </div>
     </div>
   );
 };

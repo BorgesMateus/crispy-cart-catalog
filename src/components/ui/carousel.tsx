@@ -57,13 +57,14 @@ const Carousel = React.forwardRef<
     },
     ref
   ) => {
-    const [carouselRef, api] = useEmblaCarousel(
-      {
-        ...opts,
-        axis: orientation === "horizontal" ? "x" : "y",
-      },
-      plugins
-    )
+    // Set default options with improved partial visible slides
+    const defaultOpts = {
+      ...opts,
+      axis: orientation === "horizontal" ? "x" : "y",
+      dragFree: true, // Enables momentum scrolling
+    }
+    
+    const [carouselRef, api] = useEmblaCarousel(defaultOpts, plugins)
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
 
@@ -124,7 +125,7 @@ const Carousel = React.forwardRef<
         value={{
           carouselRef,
           api: api,
-          opts,
+          opts: defaultOpts,
           orientation:
             orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
           scrollPrev,
@@ -162,6 +163,7 @@ const CarouselContent = React.forwardRef<
         className={cn(
           "flex",
           orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+          "scroll-smooth",
           className
         )}
         {...props}
@@ -183,8 +185,10 @@ const CarouselItem = React.forwardRef<
       role="group"
       aria-roledescription="slide"
       className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
+        "min-w-0 shrink-0 grow-0",
         orientation === "horizontal" ? "pl-4" : "pt-4",
+        // Add transition effect for items
+        "transition-opacity duration-300 ease-in-out",
         className
       )}
       {...props}
