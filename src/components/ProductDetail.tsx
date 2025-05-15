@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ProductImageCarousel from './ProductImageCarousel';
-import { Package, Scale, Plus, Minus, Check } from 'lucide-react';
+import { Package, Scale, Plus, Minus, Check, XCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useCart } from '@/contexts/CartContext';
@@ -29,6 +29,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const { addToCart, decreaseQuantity, updateQuantity, cartItems } = useCart();
   const { toast: shadcnToast } = useToast();
+  
+  // Product is in stock by default unless explicitly set to false
+  const isInStock = product.inStock !== false;
   
   // Get current quantity from cart
   const currentItem = cartItems.find(item => item.product.id === product.id);
@@ -88,6 +91,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   };
 
   const handleAddToCart = () => {
+    if (!isInStock) {
+      toast("Produto indisponível", {
+        description: "Este produto está temporariamente fora de estoque."
+      });
+      return;
+    }
     addToCart(product);
   };
 
@@ -116,6 +125,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             productName={product.name} 
             className="aspect-video rounded-lg overflow-hidden"
           />
+          {!isInStock && (
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-red-600 text-white font-bold px-3 py-2 rounded-md text-sm">
+                SEM ESTOQUE
+              </div>
+            </div>
+          )}
         </div>
         
         <div className="mt-4 space-y-4">
@@ -169,49 +185,67 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             )}
           </div>
           
+          {!isInStock && (
+            <div className="bg-red-50 border border-red-200 rounded-md p-3 flex items-center text-red-600">
+              <XCircle className="h-5 w-5 mr-2 flex-shrink-0" />
+              <span>Produto indisponível no momento.</span>
+            </div>
+          )}
+          
           <div className="flex justify-between items-center">
             <span className="text-xl font-bold text-red-600">
               R$ {product.price.toFixed(2)}
             </span>
-            <div className="flex items-center">
-              <Button
-                onClick={handleDecreaseQuantity}
-                variant="outline"
-                size="icon"
-                className={`rounded-full h-8 w-8 ${quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={quantity === 0}
-              >
-                <Minus className="h-4 w-4" />
-              </Button>
+            {isInStock ? (
               <div className="flex items-center">
-                <Input
-                  type="text"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  className="mx-2 h-8 w-12 px-2 text-center"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                />
-                {showApplyButton && (
-                  <Button
-                    onClick={handleApplyQuantity}
-                    variant="outline"
-                    size="sm"
-                    className="ml-1 h-8 px-2"
-                  >
-                    <Check className="h-3 w-3 mr-1" /> Aplicar
-                  </Button>
-                )}
+                <Button
+                  onClick={handleDecreaseQuantity}
+                  variant="outline"
+                  size="icon"
+                  className={`rounded-full h-8 w-8 ${quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={quantity === 0}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <div className="flex items-center">
+                  <Input
+                    type="text"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    className="mx-2 h-8 w-12 px-2 text-center"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                  />
+                  {showApplyButton && (
+                    <Button
+                      onClick={handleApplyQuantity}
+                      variant="outline"
+                      size="sm"
+                      className="ml-1 h-8 px-2"
+                    >
+                      <Check className="h-3 w-3 mr-1" /> Aplicar
+                    </Button>
+                  )}
+                </div>
+                <Button
+                  onClick={handleAddToCart}
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-8 w-8"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
               </div>
+            ) : (
               <Button
-                onClick={handleAddToCart}
                 variant="outline"
-                size="icon"
-                className="rounded-full h-8 w-8"
+                size="sm"
+                className="text-red-500 border-red-500"
+                disabled
               >
-                <Plus className="h-4 w-4" />
+                <XCircle className="h-4 w-4 mr-1" /> Indisponível
               </Button>
-            </div>
+            )}
           </div>
         </div>
       </DialogContent>

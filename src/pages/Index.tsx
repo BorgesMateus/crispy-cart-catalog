@@ -22,17 +22,17 @@ const Index = () => {
   useEffect(() => {
     let result = PRODUCTS;
     
-    // First filter by search term with accent-insensitive search (if search term exists)
+    // When search term exists, filter products globally regardless of category
     if (searchTerm) {
       const normalizedTerm = normalizeText(searchTerm);
       result = PRODUCTS.filter(product => 
         normalizeText(product.name).includes(normalizedTerm) || 
-        (product.description && normalizeText(product.description).includes(normalizedTerm))
+        (product.description && normalizeText(product.description).includes(normalizedTerm)) ||
+        product.id.toLowerCase().includes(normalizedTerm) // Busca também por código
       );
     }
-    
-    // Then filter by category if not "all"
-    if (selectedCategory !== 'all') {
+    // Only apply category filter if not searching or if explicitly requested
+    else if (selectedCategory !== 'all') {
       result = result.filter(product => product.category === selectedCategory);
     }
     
@@ -41,6 +41,9 @@ const Index = () => {
 
   // Only show featured products if on "all" category and not searching
   const shouldShowFeatured = selectedCategory === 'all' && !searchTerm;
+  
+  // If there's an active search, we'll show a special heading
+  const isSearching = searchTerm !== '';
 
   return (
     <CartProvider>
@@ -92,7 +95,16 @@ const Index = () => {
           
           {/* Products Grid */}
           <div className="p-4">
-            {selectedCategory === 'all' && !searchTerm && <h2 className="text-xl font-bold mb-4 text-gray-800">Produtos</h2>}
+            {/* Título da seção de produtos */}
+            {isSearching ? (
+              <h2 className="text-xl font-bold mb-4 text-gray-800">
+                Resultados da busca para: "{searchTerm}"
+              </h2>
+            ) : selectedCategory === 'all' && !searchTerm ? (
+              <h2 className="text-xl font-bold mb-4 text-gray-800">Produtos</h2>
+            ) : (
+              <h2 className="text-xl font-bold mb-4 text-gray-800">{selectedCategory}</h2>
+            )}
             
             {filteredProducts.length === 0 ? (
               <div className="text-center py-20">
