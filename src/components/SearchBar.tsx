@@ -31,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     }
   };
 
-  // New ordered categories based on sales analysis
+  // Ordered categories based on sales analysis
   const orderedCategories: (Category | 'all')[] = [
     'all',
     'Pão de Queijo',

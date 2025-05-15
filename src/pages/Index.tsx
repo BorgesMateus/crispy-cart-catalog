@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from '../contexts/CartContext';
 import { PRODUCTS, CATEGORIES } from '../data/products';
@@ -13,7 +12,7 @@ import KitCard from '@/components/KitCard';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
 
-// Define top selling products based on sales data (Jan-Apr 2025)
+// Define campeões de vendas (Jan-Abr 2025)
 const TOP_SELLING_PRODUCTS = [
   "PAO DE QUEIJO PREMIUM 30G PCT 5KG",
   "PAO DE QUEIJO GG 25G PCT 1KG",
@@ -42,16 +41,34 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [filteredProducts, setFilteredProducts] = useState(PRODUCTS);
-  const [mostSoldProducts, setMostSoldProducts] = useState<Product[]>([]);
+  const [championsProducts, setChampionsProducts] = useState<Product[]>([]);
 
-  // Get top selling products
+  // Get champions products in the exact order specified
   useEffect(() => {
-    const topProducts = PRODUCTS.filter(product => 
-      TOP_SELLING_PRODUCTS.some(topName => 
-        normalizeText(product.name).includes(normalizeText(topName))
-      )
+    // Create a map for O(1) lookups
+    const productMap = new Map(
+      PRODUCTS.map(product => [normalizeText(product.name), product])
     );
-    setMostSoldProducts(topProducts);
+    
+    // Get products in the specified order
+    const champions = TOP_SELLING_PRODUCTS
+      .map(name => {
+        // Try to find an exact match first
+        const normalizedName = normalizeText(name);
+        let product = productMap.get(normalizedName);
+        
+        // If no exact match, try to find a product that includes the name
+        if (!product) {
+          product = PRODUCTS.find(p => 
+            normalizeText(p.name).includes(normalizedName)
+          );
+        }
+        
+        return product;
+      })
+      .filter((product): product is Product => !!product); // Filter out undefined products
+    
+    setChampionsProducts(champions);
   }, []);
 
   // Filter products based on search term and selected category
@@ -73,17 +90,25 @@ const Index = () => {
       result = result.filter(product => product.category === selectedCategory);
     }
     
-    // Sort products - top selling products first within their categories
+    // Sort products - prioritize champions within their categories
     result = [...result].sort((a, b) => {
-      const aIsTopSelling = TOP_SELLING_PRODUCTS.some(topName => 
-        normalizeText(a.name).includes(normalizeText(topName))
+      const aIndex = TOP_SELLING_PRODUCTS.findIndex(name => 
+        normalizeText(a.name).includes(normalizeText(name))
       );
-      const bIsTopSelling = TOP_SELLING_PRODUCTS.some(topName => 
-        normalizeText(b.name).includes(normalizeText(topName))
+      const bIndex = TOP_SELLING_PRODUCTS.findIndex(name => 
+        normalizeText(b.name).includes(normalizeText(name))
       );
       
-      if (aIsTopSelling && !bIsTopSelling) return -1;
-      if (!aIsTopSelling && bIsTopSelling) return 1;
+      // If both products are in TOP_SELLING_PRODUCTS, sort by their indices
+      if (aIndex !== -1 && bIndex !== -1) {
+        return aIndex - bIndex;
+      }
+      
+      // If only one product is in TOP_SELLING_PRODUCTS, prioritize it
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+      
+      // Otherwise, maintain original order
       return 0;
     });
     
@@ -118,6 +143,16 @@ const Index = () => {
             categories={ORDERED_CATEGORIES}
           />
           
+          {/* Champions Products Section - Always show on homepage, hide during search */}
+          {!searchTerm && championsProducts.length > 0 && (
+            <FeaturedProducts 
+              title="🏆 Produtos Campeões de Vendas" 
+              products={championsProducts}
+              description="Os produtos mais vendidos entre Jan-Abr/2025"
+              showFeatured={true}
+            />
+          )}
+          
           {/* Weekly Top Products - regular featured products */}
           <FeaturedProducts 
             title="Destaques da Semana" 
@@ -125,16 +160,6 @@ const Index = () => {
             description="Os produtos mais pedidos pelos nossos clientes"
             showFeatured={shouldShowFeatured}
           />
-          
-          {/* Most Sold Products Section - Only show on all category and not searching */}
-          {selectedCategory === 'all' && !searchTerm && mostSoldProducts.length > 0 && (
-            <FeaturedProducts 
-              title="🔥 Mais Vendidos" 
-              products={mostSoldProducts}
-              description="Produtos campeões de vendas (Jan-Abr 2025)"
-              showFeatured={true}
-            />
-          )}
           
           {/* Kits Section - Only show when on "all" and not searching */}
           {selectedCategory === 'all' && !searchTerm && KITS.length > 0 && (

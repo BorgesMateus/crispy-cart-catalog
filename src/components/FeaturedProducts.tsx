@@ -38,19 +38,23 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
         opts={{
           align: "start",
           loop: products.length > 3,
+          containScroll: "trimSnaps"
         }}
         className="w-full"
       >
-        <CarouselContent>
+        <CarouselContent className="-ml-2 md:-ml-4">
           {products.map(product => (
-            <CarouselItem key={product.id} className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-4">
+            <CarouselItem 
+              key={product.id} 
+              className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+            >
               <ProductCard product={product} />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="hidden md:flex justify-end gap-2 mt-2">
-          <CarouselPrevious className="static transform-none mx-0" />
-          <CarouselNext className="static transform-none mx-0" />
+        <div className="flex justify-end gap-2 mt-2">
+          <CarouselPrevious className="relative left-0 right-auto -translate-y-0 translate-x-0" />
+          <CarouselNext className="relative right-0 left-auto -translate-y-0 translate-x-0" />
         </div>
       </Carousel>
     </div>
