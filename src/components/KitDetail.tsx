@@ -12,6 +12,7 @@ import { Kit } from '@/types/products';
 import { getKitDetails } from '@/data/kits';
 import { useCart } from '@/contexts/CartContext';
 import { ShoppingCart, X } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 interface KitDetailProps {
   kit: Kit | null;
@@ -25,6 +26,7 @@ const KitDetail: React.FC<KitDetailProps> = ({
   onClose,
 }) => {
   const { addMultipleToCart } = useCart();
+  const { toast } = useToast();
   
   if (!kit) return null;
   
@@ -38,7 +40,22 @@ const KitDetail: React.FC<KitDetailProps> = ({
     if (kitDetails.items.every(item => item.product)) {
       // Add all kit items to cart
       addMultipleToCart(kitDetails.items);
+      
+      // Show toast notification
+      toast({
+        title: "Kit adicionado!",
+        description: `${kit.name} foi adicionado ao carrinho.`,
+        duration: 3000,
+      });
+      
       onClose();
+    } else {
+      // Show error if any product is missing
+      toast({
+        title: "Erro ao adicionar kit",
+        description: "Alguns produtos deste kit não estão disponíveis.",
+        variant: "destructive",
+      });
     }
   };
 
