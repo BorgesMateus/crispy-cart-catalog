@@ -211,12 +211,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const closeCart = () => {
     setIsCartOpen(false);
   };
-
-  // Calculate cart total
-  const cartTotal = cartItems.reduce(
-    (total, item) => total + (item.product.price * item.quantity), 
-    0
-  );
   
   // Calculate total items count
   const itemsCount = cartItems.reduce(
