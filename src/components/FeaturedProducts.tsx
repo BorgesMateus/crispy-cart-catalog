@@ -67,10 +67,10 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
             ))}
           </CarouselContent>
           
-          {/* Navigation Arrows - Now positioned laterally */}
+          {/* Navigation Arrows - Now with updated colors and full opacity */}
           <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
-            <CarouselPrevious className="relative left-0 -translate-y-1/2 h-10 w-10 opacity-90 pointer-events-auto" />
-            <CarouselNext className="relative right-0 -translate-y-1/2 h-10 w-10 opacity-90 pointer-events-auto" />
+            <CarouselPrevious className="relative left-0 -translate-y-1/2 h-10 w-10 opacity-100 pointer-events-auto bg-red-600 hover:bg-red-700 text-white border-none shadow-lg" />
+            <CarouselNext className="relative right-0 -translate-y-1/2 h-10 w-10 opacity-100 pointer-events-auto bg-red-600 hover:bg-red-700 text-white border-none shadow-lg" />
           </div>
         </Carousel>
         

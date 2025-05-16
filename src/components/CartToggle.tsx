@@ -34,18 +34,21 @@ const CartToggle: React.FC = () => {
   return (
     <div className="fixed bottom-6 right-6 z-30 flex flex-col items-end gap-2">
       {itemsCount > 0 && (
-        <div className="bg-white rounded-lg shadow-lg p-2 text-xs flex flex-col">
-          <div className="flex items-center gap-1 text-gray-600">
-            <Package className="h-3 w-3" />
-            <span className={packageCount >= MIN_PACKAGES ? "text-green-600 font-bold" : ""}>
-              {packageCount}/{MIN_PACKAGES}
-            </span>
-          </div>
-          <div className="flex items-center gap-1 text-gray-600">
-            <Scale className="h-3 w-3" />
-            <span className={totalWeight >= MIN_WEIGHT_KG ? "text-green-600 font-bold" : ""}>
-              {totalWeight.toFixed(1)}/{MIN_WEIGHT_KG}kg
-            </span>
+        <div className="bg-white rounded-lg shadow-lg p-2 text-xs">
+          {/* Combined metrics row */}
+          <div className="flex items-center gap-3 text-gray-600">
+            <div className="flex items-center">
+              <Package className="h-3 w-3 mr-1" />
+              <span className={packageCount >= MIN_PACKAGES ? "text-green-600 font-bold" : ""}>
+                {packageCount}/{MIN_PACKAGES}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <Scale className="h-3 w-3 mr-1" />
+              <span className={totalWeight >= MIN_WEIGHT_KG ? "text-green-600 font-bold" : ""}>
+                {totalWeight.toFixed(1)}/{MIN_WEIGHT_KG}kg
+              </span>
+            </div>
           </div>
         </div>
       )}

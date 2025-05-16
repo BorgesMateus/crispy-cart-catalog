@@ -11,4 +11,4 @@ export const SHIPPING_RATES: ShippingRate[] = [
   { city: 'Planaltina', cost: 15.00 }
 ];
 
-export const FREE_SHIPPING_THRESHOLD = 50.00;
+export const FREE_SHIPPING_THRESHOLD = 300.00;
