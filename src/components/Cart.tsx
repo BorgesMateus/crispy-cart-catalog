@@ -45,6 +45,7 @@ const Cart: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [showNewCustomerForm, setShowNewCustomerForm] = useState<boolean | null>(null);
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [customerInfo, setCustomerInfo] = useState<{
     name: string;
     cpf: string;
@@ -95,6 +96,9 @@ const Cart: React.FC = () => {
       });
       return;
     }
+
+    // Show validation errors when the user tries to finalize the order
+    setShowValidationErrors(true);
 
     if (!meetsMinimumOrder) {
       toast.error('Não atende ao pedido mínimo!', {
@@ -352,53 +356,52 @@ const Cart: React.FC = () => {
           </div>
         )}
 
-        {/* City selection and shipping */}
+        {/* Delivery and Payment Section - More compact now */}
         {cartItems.length > 0 && (
-          <div className="px-4 py-3 bg-gray-50 border-t">
-            <p className="text-sm mb-2 font-medium">Selecione sua cidade para entrega:</p>
-            <CitySelector 
-              selectedCity={selectedCity}
-              onSelectCity={setSelectedCity}
-            />
-            {!selectedCity && cartItems.length > 0 && (
-              <p className="text-amber-600 text-xs mt-2">
-                ⚠️ Selecione sua cidade antes de finalizar o pedido
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Payment Method Selector */}
-        {cartItems.length > 0 && (
-          <div className="px-4 py-3 bg-gray-50 border-t">
-            <div className="flex items-center mb-2">
-              <CreditCard className="h-4 w-4 mr-1.5 text-gray-600" /> 
-              <p className="text-sm font-medium">Como deseja pagar?</p>
+          <div className="px-4 py-3 bg-gray-50 border-t space-y-3">
+            {/* City Selector - More compact */}
+            <div>
+              <label className="text-xs font-medium text-gray-600 mb-1 block">
+                Selecione sua cidade:
+              </label>
+              <CitySelector 
+                selectedCity={selectedCity}
+                onSelectCity={setSelectedCity}
+              />
+              {showValidationErrors && !selectedCity && (
+                <p className="text-red-500 text-xs mt-1">
+                  ⚠️ Cidade é obrigatória
+                </p>
+              )}
             </div>
             
-            <Select 
-              value={selectedPaymentMethod || ""} 
-              onValueChange={(value: PaymentMethod) => setSelectedPaymentMethod(value)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Selecione uma forma de pagamento" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="card">Cartão de crédito/débito (maquininha disponível)</SelectItem>
-                <SelectItem value="pix">Pix</SelectItem>
-                <SelectItem value="cash">Dinheiro (com troco, se necessário)</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            <p className="text-xs italic text-gray-500 mt-2">
-              (Confirme com o atendente pelo WhatsApp caso tenha dúvidas)
-            </p>
-            
-            {!selectedPaymentMethod && cartItems.length > 0 && (
-              <p className="text-amber-600 text-xs mt-2">
-                ⚠️ Selecione uma forma de pagamento antes de finalizar o pedido
-              </p>
-            )}
+            {/* Payment Method Selector - More compact */}
+            <div>
+              <div className="flex items-center mb-1">
+                <CreditCard className="h-3 w-3 mr-1 text-gray-500" /> 
+                <label className="text-xs font-medium text-gray-600">Como deseja pagar?</label>
+              </div>
+              
+              <Select 
+                value={selectedPaymentMethod || ""} 
+                onValueChange={(value: PaymentMethod) => setSelectedPaymentMethod(value)}
+              >
+                <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectValue placeholder="Selecione uma forma de pagamento" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="card">Cartão de crédito/débito (maquininha disponível)</SelectItem>
+                  <SelectItem value="pix">Pix</SelectItem>
+                  <SelectItem value="cash">Dinheiro (com troco, se necessário)</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {showValidationErrors && !selectedPaymentMethod && (
+                <p className="text-red-500 text-xs mt-1">
+                  ⚠️ Forma de pagamento é obrigatória
+                </p>
+              )}
+            </div>
           </div>
         )}
 
@@ -431,13 +434,17 @@ const Cart: React.FC = () => {
             onClick={handleFinalizeOrder}
             disabled={
               !meetsMinimumOrder || 
-              cartItems.length === 0 ||
-              !selectedCity ||
-              !selectedPaymentMethod
+              cartItems.length === 0
             }
           >
             Finalizar Pedido
           </Button>
+          
+          {/* WhatsApp confirmation note - Small and discreet at bottom */}
+          <p className="text-xs text-center text-gray-500 mt-2 italic">
+            (Confirme com o atendente pelo WhatsApp caso tenha dúvidas)
+          </p>
+          
           {cartItems.length > 0 && !meetsMinimumOrder && (
             <p className="text-xs text-center text-amber-600 mt-2">
               ⚠️ Complete o pedido mínimo para continuar

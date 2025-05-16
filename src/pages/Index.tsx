@@ -210,8 +210,7 @@ const Index = () => {
             </div>
           )}
           
-          {/* Payment Methods Section - Always show, regardless of category or search */}
-          {!searchTerm && <PaymentMethodsSection />}
+          {/* Remove Payment Methods Section from here */}
           
           {/* Show divider if both kits and products are displayed */}
           {selectedCategory === 'all' && 
