@@ -49,7 +49,6 @@ export const TOP_SELLING_PRODUCTS = [
 // Lista de todos os produtos
 export const PRODUCTS: Product[] = [
   // Pão de Queijo - na ordem especificada
-  [
   {
     "id": "PQ101",
     "name": "PAO DE QUEIJO GM 30G PCT 800G",
