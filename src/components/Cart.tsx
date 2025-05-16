@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
@@ -20,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "./ui/textarea";
+import { ScrollArea } from "./ui/scroll-area";
 
 // Define payment method types
 type PaymentMethod = 'card' | 'pix' | 'cash';
@@ -220,7 +222,7 @@ const Cart: React.FC = () => {
   };
 
   const renderCartItems = () => (
-    <div className="flex-grow overflow-auto p-4 overscroll-behavior-contain">
+    <div className="flex-grow overflow-y-auto p-4 overscroll-behavior-contain">
       {cartItems.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full text-gray-500">
           <ShoppingCart className="h-16 w-16 mb-4 opacity-20" />
@@ -425,7 +427,7 @@ const Cart: React.FC = () => {
 
   const renderPaymentStep = () => (
     <>
-      <div className="flex-grow overflow-auto p-4 overscroll-behavior-contain">
+      <div className="flex-grow overflow-y-auto p-4 overscroll-behavior-contain">
         <div className="mb-6">
           <h3 className="font-medium text-lg mb-3">Detalhes do Pedido</h3>
           <div className="bg-gray-50 rounded-lg p-3 mb-3">
@@ -551,7 +553,7 @@ const Cart: React.FC = () => {
       />
 
       <aside 
-        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-96 bg-white shadow-xl transform transition-transform duration-300 overflow-hidden flex flex-col ${
+        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-96 bg-white shadow-xl transform transition-transform duration-300 flex flex-col overflow-hidden ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -569,8 +571,11 @@ const Cart: React.FC = () => {
           </Button>
         </div>
 
-        {/* Render different content based on current step */}
-        {currentStep === 'review' ? renderReviewStep() : renderPaymentStep()}
+        {/* Wrap content in ScrollArea for better mobile scrolling */}
+        <ScrollArea className="flex-grow">
+          {/* Render different content based on current step */}
+          {currentStep === 'review' ? renderReviewStep() : renderPaymentStep()}
+        </ScrollArea>
       </aside>
       
       {/* New customer form dialog */}
