@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from '../contexts/CartContext';
-import { PRODUCTS, CATEGORIES } from '../data/products';
+import { PRODUCTS, CATEGORIES, TOP_SELLING_PRODUCTS, ORDERED_CATEGORIES } from '../data/products';
 import { Category, Product } from '../types/products';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
@@ -14,31 +14,6 @@ import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Wallet, DollarSign } from "lucide-react";
 import { useCart } from '@/contexts/CartContext';
-
-// Define campeões de vendas (Jan-Abr 2025)
-const TOP_SELLING_PRODUCTS = [
-  "PAO DE QUEIJO PREMIUM 30G PCT 5KG",
-  "PAO DE QUEIJO GG 25G PCT 1KG",
-  "SALG FESTA COXINHA PCT 50 UNID",
-  "MINI ESFIRRA DE CARNE ASSADO PCT 50 UNID",
-  "BISCOITO DE QUEIJO GG PCT 1KG",
-  "PAO DE QUEIJO GG 55G PCT 5KG",
-  "ENR SALSICHA C/ MOLHO ASSADO G PCT 10 UNID",
-  "MINI ENR DE SALSICHA ASSADO PCT 50 UNID",
-  "PAO DE QUEIJO RECHEADO C/ LINGUICA APIMENTADA PCT 1KG",
-  "QUEBRADOR DE QUEIJO SF 20G PCT 800G"
-];
-
-// Sort categories based on sales data
-const ORDERED_CATEGORIES: Category[] = [
-  'Pão de Queijo',
-  'Salgados Assados',
-  'Salgados Fritos',
-  'Pães e Massas Doces',
-  'Biscoito de Queijo',
-  'Salgados Grandes',
-  'Outros'
-];
 
 // PaymentMethodsSection component removed as per RF049
 
