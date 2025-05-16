@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
-import { X, Trash2, Plus, Minus, ShoppingCart, Package, Scale, CreditCard, Wallet, DollarSign } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingCart, Package, Scale, CreditCard } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { Progress } from './ui/progress';
 import { toast } from '@/components/ui/sonner';
@@ -12,6 +13,16 @@ import CitySelector from './CitySelector';
 import { City } from '@/types/products';
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATES } from '@/data/shipping';
 import NewCustomerForm from './NewCustomerForm';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Define payment method types
+type PaymentMethod = 'card' | 'pix' | 'cash';
 
 const Cart: React.FC = () => {
   const { 
@@ -32,6 +43,7 @@ const Cart: React.FC = () => {
   } = useCart();
 
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [showNewCustomerForm, setShowNewCustomerForm] = useState<boolean | null>(null);
   const [customerInfo, setCustomerInfo] = useState<{
     name: string;
@@ -98,6 +110,13 @@ const Cart: React.FC = () => {
       return;
     }
     
+    if (!selectedPaymentMethod) {
+      toast.error('Selecione uma forma de pagamento!', {
+        description: 'É necessário escolher como deseja pagar.'
+      });
+      return;
+    }
+    
     // Ask if it's the first purchase only if we don't already know
     if (showNewCustomerForm === null) {
       setShowNewCustomerForm(false); // Show the initial question dialog
@@ -116,6 +135,17 @@ const Cart: React.FC = () => {
         `\n*Taxa de entrega:* ${isFreeShipping ? 'Grátis' : `R$${finalShippingCost.toFixed(2)}`}`
       : '';
     
+    // Add payment method information to the WhatsApp message
+    let paymentMethodText = '';
+    if (selectedPaymentMethod) {
+      const paymentMethodMap: Record<PaymentMethod, string> = {
+        card: 'Cartão de crédito/débito',
+        pix: 'Pix',
+        cash: 'Dinheiro'
+      };
+      paymentMethodText = `\n*Forma de pagamento:* ${paymentMethodMap[selectedPaymentMethod]}`;
+    }
+    
     let customerInfoText = '';
     if (includeCustomerInfo && customerInfo) {
       customerInfoText = `\n\n*Dados do Cliente:*\n` +
@@ -128,6 +158,7 @@ const Cart: React.FC = () => {
 
     const message = `*Novo Pedido*\n\n*Produtos:*\n${cartItemsText}` + 
                     shippingText +
+                    paymentMethodText +
                     customerInfoText +
                     `\n\n*Total:* R$${orderTotal.toFixed(2)}`;
     
@@ -160,32 +191,6 @@ const Cart: React.FC = () => {
     // For returning customers or when user cancels form, send to WhatsApp directly without customer info
     sendToWhatsApp(false);
   };
-
-  const PaymentMethodsSection = () => (
-    <div className="px-4 py-3 bg-gray-50 border-t">
-      <h3 className="text-sm font-medium mb-2 flex items-center">
-        <CreditCard className="h-4 w-4 mr-1.5 text-gray-600" /> 
-        Formas de Pagamento
-      </h3>
-      <div className="space-y-2 mb-2">
-        <div className="flex items-center text-sm text-gray-700">
-          <CreditCard className="h-3.5 w-3.5 mr-2 text-gray-500" />
-          <span>Cartão de crédito e débito (maquininha disponível)</span>
-        </div>
-        <div className="flex items-center text-sm text-gray-700">
-          <DollarSign className="h-3.5 w-3.5 mr-2 text-gray-500" />
-          <span>Pix</span>
-        </div>
-        <div className="flex items-center text-sm text-gray-700">
-          <Wallet className="h-3.5 w-3.5 mr-2 text-gray-500" />
-          <span>Dinheiro (com troco, se necessário)</span>
-        </div>
-      </div>
-      <p className="text-xs italic text-gray-500 mt-1">
-        (Confirme com o atendente pelo WhatsApp caso tenha dúvidas)
-      </p>
-    </div>
-  );
 
   return (
     <>
@@ -363,8 +368,39 @@ const Cart: React.FC = () => {
           </div>
         )}
 
-        {/* Payment Methods Section */}
-        {cartItems.length > 0 && <PaymentMethodsSection />}
+        {/* Payment Method Selector */}
+        {cartItems.length > 0 && (
+          <div className="px-4 py-3 bg-gray-50 border-t">
+            <div className="flex items-center mb-2">
+              <CreditCard className="h-4 w-4 mr-1.5 text-gray-600" /> 
+              <p className="text-sm font-medium">Como deseja pagar?</p>
+            </div>
+            
+            <Select 
+              value={selectedPaymentMethod || ""} 
+              onValueChange={(value: PaymentMethod) => setSelectedPaymentMethod(value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione uma forma de pagamento" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="card">Cartão de crédito/débito (maquininha disponível)</SelectItem>
+                <SelectItem value="pix">Pix</SelectItem>
+                <SelectItem value="cash">Dinheiro (com troco, se necessário)</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <p className="text-xs italic text-gray-500 mt-2">
+              (Confirme com o atendente pelo WhatsApp caso tenha dúvidas)
+            </p>
+            
+            {!selectedPaymentMethod && cartItems.length > 0 && (
+              <p className="text-amber-600 text-xs mt-2">
+                ⚠️ Selecione uma forma de pagamento antes de finalizar o pedido
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Cart total and checkout button */}
         <div className="p-4 border-t">
@@ -396,7 +432,8 @@ const Cart: React.FC = () => {
             disabled={
               !meetsMinimumOrder || 
               cartItems.length === 0 ||
-              !selectedCity
+              !selectedCity ||
+              !selectedPaymentMethod
             }
           >
             Finalizar Pedido
