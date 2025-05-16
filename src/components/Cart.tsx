@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { Button } from './ui/button';
@@ -307,23 +306,27 @@ const Cart: React.FC = () => {
   const renderOrderRequirements = () => (
     cartItems.length > 0 && (
       <div className="px-4 py-2 bg-gray-50 border-t">
+        {/* Updated to combine package count and total weight into a single row */}
         <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center">
-            <Package className="h-4 w-4 mr-1 text-gray-500" />
-            <span className="text-sm font-medium">Pacotes:</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center">
+              <Package className="h-4 w-4 mr-1 text-gray-500" />
+              <span className="text-sm font-medium">
+                <span className={packageCount >= MIN_PACKAGES ? 'text-green-600 font-bold' : ''}>
+                  {packageCount}
+                </span>/{MIN_PACKAGES}
+              </span>
+            </div>
+            
+            <div className="flex items-center">
+              <Scale className="h-4 w-4 mr-1 text-gray-500" />
+              <span className="text-sm font-medium">
+                <span className={totalWeight >= MIN_WEIGHT_KG ? 'text-green-600 font-bold' : ''}>
+                  {totalWeight.toFixed(2)}
+                </span>/{MIN_WEIGHT_KG}kg
+              </span>
+            </div>
           </div>
-          <span className={`text-sm font-bold ${packageCount >= MIN_PACKAGES ? 'text-green-600' : 'text-gray-600'}`}>
-            {packageCount}/{MIN_PACKAGES}
-          </span>
-        </div>
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center">
-            <Scale className="h-4 w-4 mr-1 text-gray-500" />
-            <span className="text-sm font-medium">Peso Total:</span>
-          </div>
-          <span className={`text-sm font-bold ${totalWeight >= MIN_WEIGHT_KG ? 'text-green-600' : 'text-gray-600'}`}>
-            {totalWeight.toFixed(2)}/{MIN_WEIGHT_KG}kg
-          </span>
         </div>
         {!meetsMinimumOrder && (
           <div className="text-amber-600 text-xs font-medium bg-amber-50 p-2 rounded-md mt-1">
@@ -463,7 +466,7 @@ const Cart: React.FC = () => {
               <SelectContent>
                 <SelectItem value="card">Cartão de crédito/débito (maquininha disponível)</SelectItem>
                 <SelectItem value="pix">Pix</SelectItem>
-                <SelectItem value="cash">Dinheiro (com troco, se necessário)</SelectItem>
+                <SelectItem value="cash">Dinheiro</SelectItem>
               </SelectContent>
             </Select>
             
@@ -481,7 +484,7 @@ const Cart: React.FC = () => {
             <ul className="pl-4 mb-2">
               <li>• Cartão de crédito/débito (máquina disponível)</li>
               <li>• Pix</li>
-              <li>• Dinheiro (com troco, se necessário)</li>
+              <li>• Dinheiro</li>
             </ul>
             <p className="text-xs italic text-gray-500">
               (Caso tenha dúvidas, confirme com nosso atendente no WhatsApp)
