@@ -1293,13 +1293,5 @@ export const PRODUCTS: Product[] = [
     packageInfo: "010-EMBALAGEM COM 10 UND",
     weight: 3.0,
     isPackage: true
-  },
-  {
-    id: "20017",
-    name: "SALG G COXINHA 100G PCT 30 UNID",
-    price: 79.1,
-    images: ["/products/placeholder-salgado.jpg"],
-    category: "Salgados Grandes",
-    packageInfo: "011-EMBALAGEM COM 30 UND",
-    weight: 3.0,
-    isPackage:
+  }
+];
