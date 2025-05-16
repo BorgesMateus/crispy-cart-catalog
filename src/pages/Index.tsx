@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from '../contexts/CartContext';
-import { PRODUCTS, CATEGORIES } from '../data/products';
+import { PRODUCTS, CATEGORIES, TOP_SELLING_PRODUCTS, ORDERED_CATEGORIES } from '../data/products';
 import { Category, Product } from '../types/products';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
