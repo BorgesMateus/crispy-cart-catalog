@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem } from '../types/products';
 import { FREE_SHIPPING_THRESHOLD } from '../data/shipping';
 import { MIN_PACKAGES, MIN_WEIGHT_KG } from '@/data/products';
+import { useToast } from '@/hooks/use-toast';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -23,6 +24,7 @@ interface CartContextType {
   meetsMinimumOrder: boolean;
   addMultipleToCart: (products: {product: Product, quantity: number}[]) => void;
   animateCartIcon: number;
+  showFreeShippingAnimation: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -39,6 +41,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [animateCartIcon, setAnimateCartIcon] = useState(0);
+  const [previousCartTotal, setPreviousCartTotal] = useState(0);
+  const [showFreeShippingAnimation, setShowFreeShippingAnimation] = useState(false);
+  const { toast } = useToast();
 
   // Get cart items from localStorage on mount
   useEffect(() => {
@@ -51,6 +56,45 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, []);
+
+  // Calculate cart total
+  const cartTotal = cartItems.reduce(
+    (total, item) => total + (item.product.price * item.quantity), 
+    0
+  );
+
+  // Calculate amount remaining for free shipping
+  const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
+
+  // Check if free shipping threshold has been crossed in this update
+  useEffect(() => {
+    // Only check if we have previous total for comparison
+    if (previousCartTotal > 0) {
+      // Check if we just crossed the threshold from below to above
+      const wasBelow = previousCartTotal < FREE_SHIPPING_THRESHOLD;
+      const isAbove = cartTotal >= FREE_SHIPPING_THRESHOLD;
+      
+      if (wasBelow && isAbove) {
+        // Show the animation
+        setShowFreeShippingAnimation(true);
+        
+        // Show toast notification
+        toast({
+          title: "🎉 Frete Grátis!",
+          description: "Você desbloqueou o frete grátis!",
+          variant: "default",
+        });
+        
+        // Hide the animation after 4 seconds
+        setTimeout(() => {
+          setShowFreeShippingAnimation(false);
+        }, 4000);
+      }
+    }
+    
+    // Update the previous total for next comparison
+    setPreviousCartTotal(cartTotal);
+  }, [cartTotal, previousCartTotal, toast]);
 
   // Save cart items to localStorage whenever they change
   useEffect(() => {
@@ -180,9 +224,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     0
   );
   
-  // Calculate amount remaining for free shipping
-  const freeShippingRemaining = Math.max(0, FREE_SHIPPING_THRESHOLD - cartTotal);
-  
   // Calculate total weight
   const totalWeight = cartItems.reduce(
     (total, item) => total + (item.product.weight * item.quantity), 
@@ -217,6 +258,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     meetsMinimumOrder,
     addMultipleToCart,
     animateCartIcon,
+    showFreeShippingAnimation,
   };
 
   return (

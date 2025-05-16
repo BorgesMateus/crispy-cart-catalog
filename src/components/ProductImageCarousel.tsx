@@ -91,8 +91,11 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="absolute left-2 top-1/2 z-10 h-8 w-8 -translate-y-1/2" />
-      <CarouselNext className="absolute right-2 top-1/2 z-10 h-8 w-8 -translate-y-1/2" />
+      {/* Updated navigation arrows to be more visible */}
+      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
+        <CarouselPrevious className="relative -translate-y-1/2 h-10 w-10 opacity-90 shadow-md pointer-events-auto" />
+        <CarouselNext className="relative -translate-y-1/2 h-10 w-10 opacity-90 shadow-md pointer-events-auto" />
+      </div>
     </Carousel>
   );
 };

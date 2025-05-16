@@ -66,9 +66,11 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex justify-end gap-2 mt-2">
-            <CarouselPrevious className="relative left-0 right-auto -translate-y-0 translate-x-0" />
-            <CarouselNext className="relative right-0 left-auto -translate-y-0 translate-x-0" />
+          
+          {/* Navigation Arrows - Now positioned laterally */}
+          <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
+            <CarouselPrevious className="relative left-0 -translate-y-1/2 h-10 w-10 opacity-90 pointer-events-auto" />
+            <CarouselNext className="relative right-0 -translate-y-1/2 h-10 w-10 opacity-90 pointer-events-auto" />
           </div>
         </Carousel>
         

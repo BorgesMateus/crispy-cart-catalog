@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import useEmblaCarousel from "embla-carousel-react"
 import type { EmblaOptionsType, EmblaCarouselType } from "embla-carousel"
@@ -296,7 +295,6 @@ const CarouselItem = React.forwardRef<
       className={cn(
         "min-w-0 shrink-0 grow-0",
         orientation === "horizontal" ? "pl-4" : "pt-4",
-        // Add transition effect for items
         "transition-opacity duration-300 ease-in-out",
         className
       )}
@@ -322,6 +320,7 @@ const CarouselPrevious = React.forwardRef<
         orientation === "horizontal"
           ? ""
           : "rotate-90",
+        !canScrollPrev && "opacity-50",  // Make button semi-transparent when can't scroll
         className
       )}
       disabled={!canScrollPrev}
@@ -351,6 +350,7 @@ const CarouselNext = React.forwardRef<
         orientation === "horizontal" 
           ? "" 
           : "rotate-90",
+        !canScrollNext && "opacity-50", // Make button semi-transparent when can't scroll
         className
       )}
       disabled={!canScrollNext}
