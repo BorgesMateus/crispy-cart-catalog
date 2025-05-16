@@ -629,19 +629,259 @@ export const PRODUCTS: Product[] = [
   
   // Categoria: Pão de Queijo
   {
+    id: "50730",
+    name: "PAO DE QUEIJO GM 30G PCT 800G",
+    price: 20.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "004-EMBALAGEM DE 800G",
+    weight: 0.8,
+    isPackage: true
+  },
+  {
+    id: "50708",
+    name: "PAO DE QUEIJO GOURMET PCT 400G",
+    price: 10.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "10030",
+    name: "PAO DE QUEIJO PREMIUM 30G PCT 1KG",
+    price: 18.4,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "10031",
+    name: "PAO DE QUEIJO PREMIUM 30G PCT 5KG",
+    price: 92.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "003-EMBALAGEM DE 5KG",
+    weight: 5.0,
+    isPackage: true
+  },
+  {
+    id: "10028",
+    name: "PAO DE QUEIJO PREMIUM 30G PCT 800G",
+    price: 20.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "004-EMBALAGEM DE 800G",
+    weight: 0.8,
+    isPackage: true
+  },
+  {
+    id: "10029",
+    name: "PAO DE QUEIJO PREMIUM 30G PCT 400G",
+    price: 10.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "10018",
+    name: "PAO DE QUEIJO PREMIUM 55G PCT 5KG",
+    price: 92.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "003-EMBALAGEM DE 5KG",
+    weight: 5.0,
+    isPackage: true
+  },
+  {
+    id: "10019",
+    name: "PAO DE QUEIJO PREMIUM 70G PCT 5KG",
+    price: 92.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "003-EMBALAGEM DE 5KG",
+    weight: 5.0,
+    isPackage: true
+  },
+  {
+    id: "10020",
+    name: "PAO DE QUEIJO PREMIUM 100G PCT 5KG",
+    price: 92.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "003-EMBALAGEM DE 5KG",
+    weight: 5.0,
+    isPackage: true
+  },
+  {
     id: "507466",
     name: "HOT CHEESE 1KG",
     price: 33.0,
     images: ["/products/placeholder-pao-queijo.jpg"],
     category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
+    packageInfo: "POTE DE 01KG",
     weight: 1.0,
     isPackage: true,
-    inStock: false // Marked as out of stock as requested
+    inStock: false
   },
   {
-    id: "50405",
-    name: "PAO DE QUEIJO GG 100G PCT 5KG",
+    id: "50573",
+    name: "PAO DE QUEIJO RECHEADO COM CARNE PCT 1KG",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50574",
+    name: "PAO DE QUEIJO RECHEADO COM FRANGO PCT 1KG",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50575",
+    name: "PAO DE QUEIJO RECHEADO COM GOIABADA PCT 1K",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50576",
+    name: "PAO DE QUEIJO RECHEADO COM LINGUICA APIMENTADA PCT 1KG",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50577",
+    name: "PAO DE QUEIJO RECHEADO GOURMET CALABRESA 1KG",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50578",
+    name: "PAO DE QUEIJO RECHEADO GOURMET FRANGO PCT 1KG",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50579",
+    name: "PAO DE QUEIJO RECHEADO GOURMET GOIABADA PCT 1KG",
+    price: 29.2,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50580",
+    name: "PAO RECHEADO GOURMET DE CALABRESA PCT 400G",
+    price: 11.7,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "50581",
+    name: "PAO RECHEADO GOURMET DE FRANGO PCT 400G",
+    price: 11.7,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "50582",
+    name: "PAO RECHEADO GOURMET DE GOIABADA PCT 400G",
+    price: 11.7,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "50583",
+    name: "PAO DE QUEIJO SEM LACTOSE PCT 1KG",
+    price: 19.0,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50584",
+    name: "PAO DE QUEIJO SEM LACTOSE PCT 400G",
+    price: 8.0,
+    images: ["/products/placeholder-pao-queijo.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "10017",
+    name: "PAO DE QUEIJO GG 25G PCT 400G",
+    price: 8.7,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "005-EMBALAGEM DE 400G",
+    weight: 0.4,
+    isPackage: true
+  },
+  {
+    id: "10025",
+    name: "PAO DE QUEIJO GG 25G PCT 1KG",
+    price: 18.4,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "001-PACOTE DE 1KG",
+    weight: 1.0,
+    isPackage: true
+  },
+  {
+    id: "50731",
+    name: "PAO DE QUEIJO GG 25G PCT 800G",
+    price: 20.0,
+    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
+    category: "Pão de Queijo",
+    packageInfo: "004-EMBALAGEM DE 800G",
+    weight: 0.8,
+    isPackage: true
+  },
+  {
+    id: "10036",
+    name: "PAO DE QUEIJO GG 25G PCT 5KG",
     price: 92.0,
     images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
     category: "Pão de Queijo",
@@ -670,46 +910,6 @@ export const PRODUCTS: Product[] = [
     isPackage: true
   },
   {
-    id: "10025",
-    name: "PAO DE QUEIJO GG 25G PCT 1KG",
-    price: 18.4,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "10017",
-    name: "PAO DE QUEIJO GG 25G PCT 400G",
-    price: 8.7,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "10036",
-    name: "PAO DE QUEIJO GG 25G PCT 5KG",
-    price: 92.0,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "50731",
-    name: "PAO DE QUEIJO GG 25G PCT 800G",
-    price: 20.0, // Changed from 17.2 to 20.0
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "004-EMBALAGEM DE 800G",
-    weight: 0.8,
-    isPackage: true
-  },
-  {
     id: "10023",
     name: "PAO DE QUEIJO GG 30G PCT 5KG",
     price: 92.0,
@@ -727,16 +927,6 @@ export const PRODUCTS: Product[] = [
     category: "Pão de Queijo",
     packageInfo: "003-EMBALAGEM DE 5KG",
     weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "50573",
-    name: "PAO DE QUEIJO RECHEADO COM CARNE PCT 1KG",
-    price: 29.2,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
     isPackage: true
   },
   {
@@ -780,13 +970,13 @@ export const PRODUCTS: Product[] = [
     isPackage: true
   },
   {
-    id: "50708",
-    name: "PAO DE QUEIJO GOURMET PCT 400G",
-    price: 10.0, // Changed from 10.2 to 10.0
+    id: "50405",
+    name: "PAO DE QUEIJO GG 100G PCT 5KG",
+    price: 92.0,
     images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
     category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
+    packageInfo: "003-EMBALAGEM DE 5KG",
+    weight: 5.0,
     isPackage: true
   },
   
@@ -1112,169 +1302,4 @@ export const PRODUCTS: Product[] = [
     category: "Salgados Grandes",
     packageInfo: "011-EMBALAGEM COM 30 UND",
     weight: 3.0,
-    isPackage: true
-  },
-  {
-    id: "50005",
-    name: "SALG G COXINHA C/ CATUPIRY 100G PCT 30 UNID",
-    price: 79.1,
-    images: ["/products/placeholder-salgado.jpg"],
-    category: "Salgados Grandes",
-    packageInfo: "011-EMBALAGEM COM 30 UND",
-    weight: 3.0,
-    isPackage: true
-  },
-  {
-    id: "50004",
-    name: "SALG G ENR DE SALSICHA PCT 30 UNID",
-    price: 79.1,
-    images: ["/products/placeholder-salgado.jpg"],
-    category: "Salgados Grandes",
-    packageInfo: "011-EMBALAGEM COM 30 UND",
-    weight: 3.0,
-    isPackage: true
-  },
-  {
-    id: "20020",
-    name: "SALG G FRITO KIBE CARNE 100G PCT 30 UNID",
-    price: 86.7,
-    images: ["/products/placeholder-salgado.jpg"],
-    category: "Salgados Grandes",
-    packageInfo: "011-EMBALAGEM COM 30 UND",
-    weight: 3.0,
-    isPackage: true
-  },
-  {
-    id: "20019",
-    name: "SALG G NAPOLITANO 100G PCT 30 UNID",
-    price: 79.1,
-    images: ["/products/placeholder-salgado.jpg"],
-    category: "Salgados Grandes",
-    packageInfo: "011-EMBALAGEM COM 30 UND",
-    weight: 3.0,
-    isPackage: true
-  },
-  
-  // Categoria: Outros
-  {
-    id: "50615",
-    name: "BROA DOCE 35G PCT 1KG",
-    price: 16.9,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "507458",
-    name: "BROA DOCE 70G PCT 5KG",
-    price: 84.5,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "56",
-    name: "DADINHO DE TAPIOCA PCT DE 1KG",
-    price: 22.0,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "628",
-    name: "DADINHO DE TAPIOCA PCT DE 400G",
-    price: 8.3,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "3000",
-    name: "ALHO EM CREME TRADICIONAL OMG POTE 200G",
-    price: 12.0,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "005-EMBALAGEM DE 200G",
-    weight: 0.2,
-    isPackage: true
-  },
-  {
-    id: "3100",
-    name: "ALHO EM CREME COM CEBOLA OMG POTE 200G",
-    price: 12.0,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "005-EMBALAGEM DE 200G",
-    weight: 0.2,
-    isPackage: true
-  },
-  {
-    id: "3200",
-    name: "ALHO EM CREME C/ ERVAS FINAS OMG POTE 200G",
-    price: 12.0,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "005-EMBALAGEM DE 200G",
-    weight: 0.2,
-    isPackage: true
-  },
-  {
-    id: "3300",
-    name: "ALHO EM CREME C/ PIMENTA CALABRESA OMG POTE 200G",
-    price: 12.0,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "005-EMBALAGEM DE 200G",
-    weight: 0.2,
-    isPackage: true
-  },
-  {
-    id: "10028",
-    name: "BROA TEMPERADA 35G PCT 1KG",
-    price: 16.9,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "507459",
-    name: "BROA TEMPERADA 70G PCT 5KG",
-    price: 84.5,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  // Moving tapioca products to Outros category
-  {
-    id: "50707",
-    name: "PAO DE TAPIOCA COM COCO PCT 400G",
-    price: 12.1,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros", // Changed from "Pão de Queijo" to "Outros"
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "50706",
-    name: "PAO DE TAPIOCA COM QUEIJO PCT 400G",
-    price: 9.9,
-    images: ["/products/placeholder-outros.jpg"],
-    category: "Outros", // Changed from "Pão de Queijo" to "Outros"
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  }
-];
+    isPackage:
