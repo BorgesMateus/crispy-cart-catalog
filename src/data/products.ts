@@ -1,4 +1,3 @@
-
 import { Category, Product } from '../types/products';
 
 // WhatsApp number for orders
@@ -703,7 +702,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "50731",
     name: "PAO DE QUEIJO GG 25G PCT 800G",
-    price: 15.3,
+    price: 20.0, // Changed from 17.2 to 20.0
     images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
     category: "Pão de Queijo",
     packageInfo: "004-EMBALAGEM DE 800G",
@@ -781,200 +780,10 @@ export const PRODUCTS: Product[] = [
     isPackage: true
   },
   {
-    id: "50407",
-    name: "PAO DE QUEIJO GM 25G PCT 800G",
-    price: 17.2,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "004-EMBALAGEM DE 800G",
-    weight: 0.8,
-    isPackage: true
-  },
-  {
     id: "50708",
     name: "PAO DE QUEIJO GOURMET PCT 400G",
-    price: 10.2,
+    price: 10.0, // Changed from 10.2 to 10.0
     images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "50657",
-    name: "PAO DE QUEIJO PREMIUM 100G PCT 5KG",
-    price: 114.95,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "10010",
-    name: "PAO DE QUEIJO PREMIUM 30G PCT 1KG",
-    price: 22.99,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "10020",
-    name: "PAO DE QUEIJO PREMIUM 30G PCT 400G",
-    price: 9.5,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "50659",
-    name: "PAO DE QUEIJO PREMIUM 30G PCT 5KG",
-    price: 114.95,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "50732",
-    name: "PAO DE QUEIJO PREMIUM 30G PCT 800G",
-    price: 19.0,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "004-EMBALAGEM DE 800G",
-    weight: 0.8,
-    isPackage: true
-  },
-  {
-    id: "50653",
-    name: "PAO DE QUEIJO PREMIUM 55G PCT 5KG",
-    price: 114.95,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "507442",
-    name: "PAO DE QUEIJO PREMIUM 70G PCT 5KG",
-    price: 574.75,
-    images: ["/products/pao-queijo-1.jpg", "/products/pao-queijo-2.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "003-EMBALAGEM DE 5KG",
-    weight: 5.0,
-    isPackage: true
-  },
-  {
-    id: "50520",
-    name: "PAO DE QUEIJO RECHEADO COM FRANGO PCT 1KG",
-    price: 29.2,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "50655",
-    name: "PAO DE QUEIJO RECHEADO COM GOIABADA PCT 1K",
-    price: 29.2,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "50611",
-    name: "PAO DE QUEIJO RECHEADO COM LINGUICA APIMENTADA PCT 1KG",
-    price: 29.2,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "507469",
-    name: "PAO DE QUEIJO RECHEADO GOURMET CALABRESA 1KG",
-    price: 39.5,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "11",
-    name: "PAO DE QUEIJO RECHEADO GOURMET FRANGO PCT 1KG",
-    price: 39.5,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "10",
-    name: "PAO DE QUEIJO RECHEADO GOURMET GOIABADA PCT 1KG",
-    price: 39.5,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "50704",
-    name: "PAO DE QUEIJO SEM LACTOSE PCT 1KG",
-    price: 29.6,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "001-PACOTE DE 1KG",
-    weight: 1.0,
-    isPackage: true
-  },
-  {
-    id: "50705",
-    name: "PAO DE QUEIJO SEM LACTOSE PCT 400G",
-    price: 12.1,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "622",
-    name: "PAO RECHEADO GOURMET DE CALABRESA PCT 400G",
-    price: 16.4,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "623",
-    name: "PAO RECHEADO GOURMET DE FRANGO PCT 400G",
-    price: 16.4,
-    images: ["/products/placeholder-pao-queijo.jpg"],
-    category: "Pão de Queijo",
-    packageInfo: "005-EMBALAGEM DE 400G",
-    weight: 0.4,
-    isPackage: true
-  },
-  {
-    id: "621",
-    name: "PAO RECHEADO GOURMET DE GOIABADA PCT 400G",
-    price: 16.4,
-    images: ["/products/placeholder-pao-queijo.jpg"],
     category: "Pão de Queijo",
     packageInfo: "005-EMBALAGEM DE 400G",
     weight: 0.4,
