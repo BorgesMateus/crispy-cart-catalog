@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem } from '../types/products';
 import { FREE_SHIPPING_THRESHOLD } from '../data/shipping';
@@ -75,20 +74,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const isAbove = cartTotal >= FREE_SHIPPING_THRESHOLD;
       
       if (wasBelow && isAbove) {
-        // Show the animation
-        setShowFreeShippingAnimation(true);
-        
-        // Show toast notification
+        // Show toast notification only, removing the central popup animation
         toast({
           title: "🎉 Frete Grátis!",
           description: "Você desbloqueou o frete grátis!",
           variant: "default",
         });
         
-        // Hide the animation after 4 seconds
+        // We'll still keep this state for other potential uses, but we won't show the central animation
+        setShowFreeShippingAnimation(true);
+        
+        // Reset the animation flag after 1 second
         setTimeout(() => {
           setShowFreeShippingAnimation(false);
-        }, 4000);
+        }, 1000);
       }
     }
     

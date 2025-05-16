@@ -13,7 +13,6 @@ import FeaturedProducts from '@/components/FeaturedProducts';
 import { FEATURED_PRODUCTS, WEEKLY_TOP } from '@/data/featured';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Wallet, DollarSign } from "lucide-react";
-import FreeShippingAnimation from '@/components/FreeShippingAnimation';
 import { useCart } from '@/contexts/CartContext';
 
 // Define campeões de vendas (Jan-Abr 2025)
@@ -240,17 +239,10 @@ const Index = () => {
         {/* Cart Sidebar */}
         <Cart />
 
-        {/* Free Shipping Animation Component */}
-        <CartAnimationWrapper />
+        {/* Removed the FreeShippingAnimation component */}
       </div>
     </CartProvider>
   );
-};
-
-// Wrapper component to access useCart hook within CartProvider
-const CartAnimationWrapper = () => {
-  const { showFreeShippingAnimation } = useCart();
-  return <FreeShippingAnimation show={showFreeShippingAnimation} />;
 };
 
 export default Index;
