@@ -57,7 +57,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Calculate cart total
+  // Calculate cart total - define it only once
   const cartTotal = cartItems.reduce(
     (total, item) => total + (item.product.price * item.quantity), 
     0
